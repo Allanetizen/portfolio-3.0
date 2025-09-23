@@ -38,19 +38,6 @@ interface Experience {
   description: string;
 }
 
-interface PortfolioData {
-  projects: Project[];
-  experiences: Experience[];
-  heroName: string;
-  heroDescription: string;
-  aboutText: string;
-  contactEmail: string;
-  contactLinkedIn: string;
-  contactInstagram: string;
-  contactMedium: string;
-  contactGitHub: string;
-  profileImageUrl: string;
-}
 
 export default function Home() {
   const { isAuthenticated } = useAuth();
@@ -181,25 +168,32 @@ export default function Home() {
     // Load data from API
     fetch('/api/portfolio')
       .then(response => response.json())
-      .then((data: PortfolioData) => {
-        setProjects(data.projects.map((p: Project) => ({
-          ...p,
-          imageUrl: p.imageUrl || '',
-          challenge: p.challenge || 'The challenge was to redesign the user experience for a complex application, making it intuitive and accessible to users.',
-          solution: p.solution || 'Implemented a clean, minimalist design with progressive disclosure, improving user experience and satisfaction.',
-          chartImageUrl: p.chartImageUrl || '',
-          sections: p.sections || []
-        })));
-        setExperiences(data.experiences);
-        setHeroName(data.heroName);
-        setHeroDescription(data.heroDescription);
-        setAboutText(data.aboutText);
-        setContactEmail(data.contactEmail);
-        setContactLinkedIn(data.contactLinkedIn);
-        setContactInstagram(data.contactInstagram);
-        setContactMedium(data.contactMedium);
-        setContactGitHub(data.contactGitHub);
-        setProfileImageUrl(data.profileImageUrl);
+      .then((data: unknown) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const d = data as any;
+        if (d && d.projects) {
+          setProjects(d.projects.map((p: Project) => ({
+            ...p,
+            imageUrl: p.imageUrl || '',
+            challenge: p.challenge || 'The challenge was to redesign the user experience for a complex application, making it intuitive and accessible to users.',
+            solution: p.solution || 'Implemented a clean, minimalist design with progressive disclosure, improving user experience and satisfaction.',
+            chartImageUrl: p.chartImageUrl || '',
+            sections: p.sections || []
+          })));
+          setExperiences(d.experiences || []);
+          setHeroName(d.heroName || 'YOUR NAME');
+          setHeroDescription(d.heroDescription || 'Product Manager & Designer crafting innovative solutions with strategic thinking and creative design.');
+          setAboutText(d.aboutText || 'Crafting digital experiences that blend strategic thinking with artistic design. I bridge the gap between user needs and technical innovation, creating products that not only work beautifully but tell compelling stories.');
+          setContactEmail(d.contactEmail || 'mailto:your.email@example.com');
+          setContactLinkedIn(d.contactLinkedIn || 'https://linkedin.com/in/yourprofile');
+          setContactInstagram(d.contactInstagram || 'https://instagram.com/yourprofile');
+          setContactMedium(d.contactMedium || 'https://medium.com/@yourprofile');
+          setContactGitHub(d.contactGitHub || 'https://github.com/yourprofile');
+          setProfileImageUrl(d.profileImageUrl || '');
+        } else {
+          // Use defaults if data is invalid
+          console.log('Using default data');
+        }
       })
       .catch(error => console.error('Error loading data:', error));
   }, []);
