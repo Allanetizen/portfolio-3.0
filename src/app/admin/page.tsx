@@ -5,6 +5,12 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
 
+interface Section {
+  id: string;
+  type: 'header' | 'image' | 'text' | 'title';
+  content: string;
+}
+
 interface Project {
   id: number;
   title: string;
@@ -15,6 +21,7 @@ interface Project {
     rating: string;
     growth: string;
   };
+  sections: Section[];
 }
 
 interface Experience {
@@ -40,21 +47,24 @@ export default function AdminPage() {
       title: 'Project 1',
       description: 'Innovative app design with focus on user experience.',
       tags: ['#UX', '#Mobile'],
-      stats: { users: '+5k users', rating: '⭐ 4.8 rating', growth: '📈 40% growth' }
+      stats: { users: '+5k users', rating: '⭐ 4.8 rating', growth: '📈 40% growth' },
+      sections: []
     },
     {
       id: 2,
       title: 'Project 2',
       description: 'Innovative app design with focus on user experience.',
       tags: ['#UX', '#Mobile'],
-      stats: { users: '+5k users', rating: '⭐ 4.8 rating', growth: '📈 40% growth' }
+      stats: { users: '+5k users', rating: '⭐ 4.8 rating', growth: '📈 40% growth' },
+      sections: []
     },
     {
       id: 3,
       title: 'Project 3',
       description: 'Innovative app design with focus on user experience.',
       tags: ['#UX', '#Mobile'],
-      stats: { users: '+5k users', rating: '⭐ 4.8 rating', growth: '📈 40% growth' }
+      stats: { users: '+5k users', rating: '⭐ 4.8 rating', growth: '📈 40% growth' },
+      sections: []
     }
   ]);
 
@@ -122,6 +132,29 @@ export default function AdminPage() {
   const updateExperience = (id: number, field: keyof Experience, value: string) => {
     setExperiences(experiences.map(e =>
       e.id === id ? { ...e, [field]: value } : e
+    ));
+  };
+
+  const addSection = (projectId: number) => {
+    setProjects(projects.map(p =>
+      p.id === projectId ? { ...p, sections: [...p.sections, { id: Date.now().toString(), type: 'text', content: '' }] } : p
+    ));
+  };
+
+  const updateSection = (projectId: number, sectionId: string, field: keyof Section, value: string) => {
+    setProjects(projects.map(p =>
+      p.id === projectId ? {
+        ...p,
+        sections: p.sections.map(s =>
+          s.id === sectionId ? { ...s, [field]: value } : s
+        )
+      } : p
+    ));
+  };
+
+  const removeSection = (projectId: number, sectionId: string) => {
+    setProjects(projects.map(p =>
+      p.id === projectId ? { ...p, sections: p.sections.filter(s => s.id !== sectionId) } : p
     ));
   };
 
@@ -206,6 +239,44 @@ export default function AdminPage() {
                         onChange={(e) => updateProject(project.id, 'tags', e.target.value.split(', '))}
                         className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
                       />
+                    </div>
+                    <div>
+                      <label className="block body-text mb-2">Sections</label>
+                      <div className="space-y-2">
+                        {project.sections.map((section) => (
+                          <div key={section.id} className="flex gap-2 items-center">
+                            <select
+                              value={section.type}
+                              onChange={(e) => updateSection(project.id, section.id, 'type', e.target.value)}
+                              className="glass rounded px-2 py-1 text-sm"
+                            >
+                              <option value="header">Header</option>
+                              <option value="image">Image</option>
+                              <option value="text">Text</option>
+                              <option value="title">Title</option>
+                            </select>
+                            <input
+                              type="text"
+                              value={section.content}
+                              onChange={(e) => updateSection(project.id, section.id, 'content', e.target.value)}
+                              className="flex-1 glass rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-accent"
+                              placeholder="Content"
+                            />
+                            <button
+                              onClick={() => removeSection(project.id, section.id)}
+                              className="text-red-400 hover:text-red-600 text-sm"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        ))}
+                        <button
+                          onClick={() => addSection(project.id)}
+                          className="text-accent hover:text-accent/80 text-sm"
+                        >
+                          + Add Section
+                        </button>
+                      </div>
                     </div>
                   </div>
                   <div className="space-y-4">

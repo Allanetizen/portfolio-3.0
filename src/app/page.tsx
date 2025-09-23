@@ -7,6 +7,12 @@ import { motion } from 'framer-motion';
 import Background from '../components/Background';
 import { useAuth } from '../contexts/AuthContext';
 
+interface Section {
+  id: string;
+  type: 'header' | 'image' | 'text' | 'title';
+  content: string;
+}
+
 interface Project {
   id: number;
   title: string;
@@ -21,6 +27,7 @@ interface Project {
   challenge: string;
   solution: string;
   chartImageUrl: string;
+  sections: Section[];
 }
 
 interface Experience {
@@ -73,7 +80,7 @@ export default function Home() {
     }
   };
 
-  const [projects, setProjects] = useState([
+  const [projects, setProjects] = useState<Project[]>([
     {
       id: 1,
       title: 'Project 1',
@@ -83,7 +90,8 @@ export default function Home() {
       imageUrl: '',
       challenge: 'The challenge was to redesign the user experience for a complex application, making it intuitive and accessible to users.',
       solution: 'Implemented a clean, minimalist design with progressive disclosure, improving user experience and satisfaction.',
-      chartImageUrl: ''
+      chartImageUrl: '',
+      sections: []
     },
     {
       id: 2,
@@ -94,7 +102,8 @@ export default function Home() {
       imageUrl: '',
       challenge: 'The challenge was to redesign the user experience for a complex application, making it intuitive and accessible to users.',
       solution: 'Implemented a clean, minimalist design with progressive disclosure, improving user experience and satisfaction.',
-      chartImageUrl: ''
+      chartImageUrl: '',
+      sections: []
     },
     {
       id: 3,
@@ -105,7 +114,8 @@ export default function Home() {
       imageUrl: '',
       challenge: 'The challenge was to redesign the user experience for a complex application, making it intuitive and accessible to users.',
       solution: 'Implemented a clean, minimalist design with progressive disclosure, improving user experience and satisfaction.',
-      chartImageUrl: ''
+      chartImageUrl: '',
+      sections: []
     },
     {
       id: 4,
@@ -116,7 +126,8 @@ export default function Home() {
       imageUrl: '',
       challenge: 'The challenge was to redesign the user experience for a complex application, making it intuitive and accessible to users.',
       solution: 'Implemented a clean, minimalist design with progressive disclosure, improving user experience and satisfaction.',
-      chartImageUrl: ''
+      chartImageUrl: '',
+      sections: []
     },
     {
       id: 5,
@@ -127,7 +138,8 @@ export default function Home() {
       imageUrl: '',
       challenge: 'The challenge was to redesign the user experience for a complex application, making it intuitive and accessible to users.',
       solution: 'Implemented a clean, minimalist design with progressive disclosure, improving user experience and satisfaction.',
-      chartImageUrl: ''
+      chartImageUrl: '',
+      sections: []
     }
   ]);
 
@@ -175,7 +187,8 @@ export default function Home() {
           imageUrl: p.imageUrl || '',
           challenge: p.challenge || 'The challenge was to redesign the user experience for a complex application, making it intuitive and accessible to users.',
           solution: p.solution || 'Implemented a clean, minimalist design with progressive disclosure, improving user experience and satisfaction.',
-          chartImageUrl: p.chartImageUrl || ''
+          chartImageUrl: p.chartImageUrl || '',
+          sections: p.sections || []
         })));
         setExperiences(data.experiences);
         setHeroName(data.heroName);
@@ -258,9 +271,10 @@ export default function Home() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setEditMode(!editMode)}
-              className={`glass px-4 py-2 rounded-lg font-bold hover:bg-accent/10 transition-colors ${editMode ? 'bg-accent text-white' : ''}`}
+              className={`glass p-3 rounded-lg hover:bg-accent/10 transition-colors ${editMode ? 'bg-accent text-white' : ''}`}
+              title={editMode ? 'View Mode' : 'Edit Mode'}
             >
-              {editMode ? 'VIEW' : 'EDIT'}
+              ✏️
             </motion.button>
             {editMode && (
               <motion.button
@@ -597,7 +611,7 @@ export default function Home() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => {
-                    const newProject = {
+                    const newProject: Project = {
                       id: projects.length + 1,
                       title: 'New Project',
                       description: 'Project description',
@@ -606,7 +620,8 @@ export default function Home() {
                       imageUrl: '',
                       challenge: 'Challenge description',
                       solution: 'Solution description',
-                      chartImageUrl: ''
+                      chartImageUrl: '',
+                      sections: []
                     };
                     setProjects([...projects, newProject]);
                   }}
@@ -1151,43 +1166,84 @@ export default function Home() {
                   {editMode ? (
                     <div className="space-y-4">
                       <div>
-                        <label className="block font-bold text-xl mb-2">Challenge</label>
-                        <textarea
-                          value={project.challenge}
-                          onChange={(e) => {
-                            const newProjects = projects.map(p =>
-                              p.id === project.id ? { ...p, challenge: e.target.value } : p
-                            );
-                            setProjects(newProjects);
-                          }}
-                          className="w-full body-text bg-transparent border-b border-accent/50 focus:outline-none focus:border-accent resize-none"
-                          placeholder="Challenge description"
-                          rows={4}
-                        />
-                      </div>
-                      <div>
-                        <label className="block font-bold text-xl mb-2">Solution</label>
-                        <textarea
-                          value={project.solution}
-                          onChange={(e) => {
-                            const newProjects = projects.map(p =>
-                              p.id === project.id ? { ...p, solution: e.target.value } : p
-                            );
-                            setProjects(newProjects);
-                          }}
-                          className="w-full body-text bg-transparent border-b border-accent/50 focus:outline-none focus:border-accent resize-none"
-                          placeholder="Solution description"
-                          rows={4}
-                        />
+                        <label className="block font-bold text-xl mb-2">Sections</label>
+                        <div className="space-y-2">
+                          {project.sections.map((section) => (
+                            <div key={section.id} className="flex gap-2 items-center">
+                              <select
+                                value={section.type}
+                                onChange={(e) => {
+                                  const newProjects = projects.map(p =>
+                                    p.id === project.id ? {
+                                      ...p,
+                                      sections: p.sections.map(s =>
+                                        s.id === section.id ? { ...s, type: e.target.value as Section['type'] } : s
+                                      )
+                                    } : p
+                                  );
+                                  setProjects(newProjects);
+                                }}
+                                className="glass rounded px-2 py-1 text-sm"
+                              >
+                                <option value="header">Header</option>
+                                <option value="image">Image</option>
+                                <option value="text">Text</option>
+                                <option value="title">Title</option>
+                              </select>
+                              <input
+                                type="text"
+                                value={section.content}
+                                onChange={(e) => {
+                                  const newProjects = projects.map(p =>
+                                    p.id === project.id ? {
+                                      ...p,
+                                      sections: p.sections.map(s =>
+                                        s.id === section.id ? { ...s, content: e.target.value } : s
+                                      )
+                                    } : p
+                                  );
+                                  setProjects(newProjects);
+                                }}
+                                className="flex-1 glass rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-accent"
+                                placeholder="Content"
+                              />
+                              <button
+                                onClick={() => {
+                                  const newProjects = projects.map(p =>
+                                    p.id === project.id ? { ...p, sections: p.sections.filter(s => s.id !== section.id) } : p
+                                  );
+                                  setProjects(newProjects);
+                                }}
+                                className="text-red-400 hover:text-red-600 text-sm"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          ))}
+                          <button
+                            onClick={() => {
+                              const newProjects = projects.map(p =>
+                                p.id === project.id ? { ...p, sections: [...p.sections, { id: Date.now().toString(), type: 'text' as Section['type'], content: '' }] } : p
+                              );
+                              setProjects(newProjects);
+                            }}
+                            className="text-accent hover:text-accent/80 text-sm"
+                          >
+                            + Add Section
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ) : (
-                    <>
-                      <h3 className="font-bold text-xl mb-4">Challenge</h3>
-                      <p className="body-text mb-6">{project.challenge}</p>
-                      <h3 className="font-bold text-xl mb-4">Solution</h3>
-                      <p className="body-text">{project.solution}</p>
-                    </>
+                    <div className="space-y-4">
+                      {project.sections.map((section) => {
+                        if (section.type === 'header') return <h3 key={section.id} className="font-bold text-xl">{section.content}</h3>;
+                        if (section.type === 'image') return <img key={section.id} src={section.content} alt="" className="w-full rounded-lg" />;
+                        if (section.type === 'text') return <p key={section.id} className="body-text">{section.content}</p>;
+                        if (section.type === 'title') return <h2 key={section.id} className="font-bold text-2xl">{section.content}</h2>;
+                        return null;
+                      })}
+                    </div>
                   )}
                 </div>
                 <div>

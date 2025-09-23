@@ -19,7 +19,8 @@ export async function GET() {
             imageUrl: '',
             challenge: 'The challenge was to redesign the user experience for a complex application, making it intuitive and accessible to users.',
             solution: 'Implemented a clean, minimalist design with progressive disclosure, improving user experience and satisfaction.',
-            chartImageUrl: ''
+            chartImageUrl: '',
+            sections: []
           },
           // Add more default projects as needed
         ],
