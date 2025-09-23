@@ -25,6 +25,11 @@ interface Experience {
   description: string;
 }
 
+interface PortfolioData {
+  projects: Project[];
+  experiences: Experience[];
+}
+
 export default function AdminPage() {
   const { isAuthenticated, logout } = useAuth();
   const router = useRouter();
@@ -77,7 +82,7 @@ export default function AdminPage() {
       // Load data from API
       fetch('/api/portfolio')
         .then(response => response.json())
-        .then((data: any) => {
+        .then((data: PortfolioData) => {
           setProjects(data.projects);
           setExperiences(data.experiences);
         })
@@ -108,7 +113,7 @@ export default function AdminPage() {
     }
   };
 
-  const updateProject = (id: number, field: keyof Project, value: any) => {
+  const updateProject = (id: number, field: keyof Project, value: unknown) => {
     setProjects(projects.map(p =>
       p.id === id ? { ...p, [field]: value } : p
     ));
