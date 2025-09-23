@@ -1,8 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8f9fa;
+  --foreground: #374151;
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --accent: #6366f1; /* Indigo accent */
+  --gradient-start: #e2e8f0;
+  --gradient-end: #cbd5e1;
+  --sticky-bg: rgba(255, 255, 255, 0.8);
+  --sticky-border: rgba(0, 0, 0, 0.1);
 }
 
 @theme inline {
@@ -14,13 +22,133 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0f172a;
+    --foreground: #f1f5f9;
+    --glass-bg: rgba(15, 23, 42, 0.2);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --gradient-start: #1e293b;
+    --gradient-end: #334155;
+    --sticky-bg: rgba(255, 255, 255, 0.1);
+    --sticky-border: rgba(255, 255, 255, 0.2);
   }
 }
 
 body {
-  background: var(--background);
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  min-height: 100vh;
+}
+
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+.sticky-note {
+  background: var(--sticky-bg);
+  backdrop-filter: blur(5px);
+  border: 1px solid var(--sticky-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: rotate(-2deg);
+}
+
+.sticky-note:nth-child(odd) {
+  transform: rotate(1deg);
+}
+
+.headline {
+  font-family: var(--font-geist-sans);
+  font-weight: 900;
+  font-size: clamp(2rem, 8vw, 6rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.body-text {
+  font-family: var(--font-geist-sans);
+  font-weight: 300;
+  font-size: clamp(0.875rem, 2vw, 1.125rem);
+  line-height: 1.6;
+  color: var(--foreground);
+  opacity: 0.8;
+}
+
+.bleed-text {
+  margin-left: -2rem;
+  margin-right: -2rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+@media (max-width: 768px) {
+  .bleed-text {
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .sticky-note {
+    font-size: 0.75rem;
+    padding: 0.5rem;
+  }
+
+  .headline {
+    font-size: clamp(1.5rem, 6vw, 4rem);
+  }
+
+  .body-text {
+    font-size: clamp(0.75rem, 2vw, 1rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .bleed-text {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .headline {
+    font-size: clamp(1.25rem, 8vw, 3rem);
+    text-align: center;
+  }
+
+  .body-text {
+    font-size: clamp(0.875rem, 3vw, 1rem);
+  }
+
+  .sticky-note {
+    font-size: 0.7rem;
+    padding: 0.375rem;
+  }
+}
+
+/* Custom scrollbar styles */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Smooth scrolling for carousel */
+.overflow-x-auto {
+  scroll-behavior: smooth;
+}
+
+/* Line clamp utility */
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
