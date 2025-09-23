@@ -70,9 +70,6 @@ export default function LoginPage() {
           </motion.button>
         </form>
 
-        <div className="mt-6 text-center body-text text-sm opacity-70">
-          Demo credentials: admin@portfolio.com / admin123
-        </div>
       </motion.div>
     </div>
   );

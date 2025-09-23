@@ -4,12 +4,13 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import Background from '../components/Background';
 import { useAuth } from '../contexts/AuthContext';
 
 interface Section {
   id: string;
-  type: 'header' | 'image' | 'text' | 'title';
+  type: 'header' | 'image' | 'text' | 'title' | 'paragraph';
   content: string;
 }
 
@@ -316,9 +317,10 @@ export default function Home() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             href="/login"
-            className="glass px-4 py-2 rounded-lg font-bold hover:bg-accent/10 transition-colors"
+            className="glass p-3 rounded-lg hover:bg-accent/10 transition-colors"
+            title="Login to Edit"
           >
-            LOGIN TO EDIT
+            ✏️
           </motion.a>
         )}
       </div>
@@ -370,9 +372,9 @@ export default function Home() {
           </motion.div>
 
           {/* Projects Carousel */}
-          <div className="relative w-full max-w-7xl">
+          <div className="relative w-full max-w-7xl mt-16">
             <div className="overflow-x-auto scrollbar-hide snap-x snap-mandatory">
-              <div className="flex space-x-6 md:space-x-10 px-4 pb-8">
+              <div className="flex space-x-6 md:space-x-10 px-4 pb-8 pt-4">
                 {projects.map((project, index) => (
                   <motion.div
                     key={project.id}
@@ -401,7 +403,7 @@ export default function Home() {
                       transition={{ duration: 0.2 }}
                     >
                       {project.imageUrl ? (
-                        <img src={project.imageUrl} alt={project.title} className="w-full h-full object-cover" />
+                        <Image src={project.imageUrl} alt={project.title} fill className="object-cover" />
                       ) : (
                         <motion.span
                           className="text-3xl md:text-4xl"
@@ -420,7 +422,7 @@ export default function Home() {
                       )}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       {editMode && (
-                        <div className="absolute bottom-2 left-2 right-2 bg-white/90 text-black px-2 py-1 text-xs rounded space-y-1">
+                        <div className="absolute bottom-2 left-2 right-2 bg-white/90 text-black px-2 py-1 text-xs rounded space-y-1" onClick={(e) => e.stopPropagation()}>
                           <input
                             type="text"
                             value={project.imageUrl}
@@ -627,7 +629,7 @@ export default function Home() {
             )}
 
             {/* Carousel Navigation */}
-            <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 flex space-x-4">
+            <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 flex space-x-4 z-50">
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
@@ -706,7 +708,7 @@ export default function Home() {
               <div className="glass rounded-3xl p-6 relative overflow-hidden">
                 <div className="w-64 h-80 bg-gradient-to-br from-accent/20 to-accent/5 rounded-2xl flex items-center justify-center">
                   {profileImageUrl ? (
-                    <img src={profileImageUrl} alt="Profile" className="w-full h-full object-cover rounded-2xl" />
+                    <Image src={profileImageUrl} alt="Profile" fill className="object-cover rounded-2xl" />
                   ) : (
                     <span className="text-8xl">👤</span>
                   )}
@@ -1010,50 +1012,68 @@ export default function Home() {
                 <motion.a
                   whileHover={{ scale: 1.1 }}
                   href={contactEmail}
-                  className="glass p-4 rounded-full hover:bg-accent/10 transition-colors"
+                  className="glass p-3 rounded-full hover:bg-accent/10 transition-colors"
                 >
-                  <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
                 </motion.a>
                 <motion.a
                   whileHover={{ scale: 1.1 }}
                   href={contactLinkedIn}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="glass p-4 rounded-full hover:bg-accent/10 transition-colors"
+                  className="glass p-3 rounded-full hover:bg-accent/10 transition-colors"
                 >
-                  <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
                 </motion.a>
                 <motion.a
                   whileHover={{ scale: 1.1 }}
                   href={contactInstagram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="glass p-4 rounded-full hover:bg-accent/10 transition-colors"
+                  className="glass p-3 rounded-full hover:bg-accent/10 transition-colors"
                 >
-                  <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                 </motion.a>
                 <motion.a
                   whileHover={{ scale: 1.1 }}
                   href={contactMedium}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="glass p-4 rounded-full hover:bg-accent/10 transition-colors"
+                  className="glass p-3 rounded-full hover:bg-accent/10 transition-colors"
                 >
-                  <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z"/></svg>
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z"/></svg>
                 </motion.a>
                 <motion.a
                   whileHover={{ scale: 1.1 }}
                   href={contactGitHub}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="glass p-4 rounded-full hover:bg-accent/10 transition-colors"
+                  className="glass p-3 rounded-full hover:bg-accent/10 transition-colors"
                 >
-                  <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
                 </motion.a>
               </div>
             )}
           </motion.div>
         </section>
+
+        {/* Footer */}
+        <footer className="w-screen min-h-[10vh] flex items-center justify-center px-4 py-8 bg-black/10">
+          <div className="text-center">
+            <p className="text-sm opacity-70">© 2024 Allan Kibet. All rights reserved.</p>
+            <div className="flex justify-center space-x-4 mt-4">
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 transition-opacity">
+                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+              </a>
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 transition-opacity">
+                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+              </a>
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 transition-opacity">
+                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
+              </a>
+            </div>
+          </div>
+        </footer>
       </motion.main>
 
       {/* Navigation Arrows */}
@@ -1103,6 +1123,45 @@ export default function Home() {
               onClick={(e) => e.stopPropagation()}
             >
               <button onClick={() => setExpandedSection(null)} className="absolute top-4 right-4 text-2xl">&times;</button>
+              {editMode && (
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={async () => {
+                    const data = {
+                      projects,
+                      experiences,
+                      heroName,
+                      heroDescription,
+                      aboutText,
+                      contactEmail,
+                      contactLinkedIn,
+                      contactInstagram,
+                      contactMedium,
+                      contactGitHub,
+                      profileImageUrl
+                    };
+                    try {
+                      const response = await fetch('/api/portfolio', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                      });
+                      if (response.ok) {
+                        alert('Changes saved!');
+                      } else {
+                        alert('Failed to save changes');
+                      }
+                    } catch (error) {
+                      console.error('Error saving:', error);
+                      alert('Error saving changes');
+                    }
+                  }}
+                  className="absolute top-4 right-12 glass px-4 py-2 rounded-lg font-bold hover:bg-accent/10 transition-colors"
+                >
+                  SAVE
+                </motion.button>
+              )}
               <div className="mb-8">
                 {editMode ? (
                   <div className="space-y-4">
@@ -1155,92 +1214,145 @@ export default function Home() {
                   </>
                 )}
               </div>
-              <div className="grid md:grid-cols-2 gap-8">
-                <div>
-                  {editMode ? (
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block font-bold text-xl mb-2">Sections</label>
-                        <div className="space-y-2">
-                          {project.sections.map((section) => (
-                            <div key={section.id} className="flex gap-2 items-center">
-                              <select
-                                value={section.type}
-                                onChange={(e) => {
-                                  const newProjects = projects.map(p =>
-                                    p.id === project.id ? {
-                                      ...p,
-                                      sections: p.sections.map(s =>
-                                        s.id === section.id ? { ...s, type: e.target.value as Section['type'] } : s
-                                      )
-                                    } : p
-                                  );
-                                  setProjects(newProjects);
-                                }}
-                                className="glass rounded px-2 py-1 text-sm"
-                              >
-                                <option value="header">Header</option>
-                                <option value="image">Image</option>
-                                <option value="text">Text</option>
-                                <option value="title">Title</option>
-                              </select>
-                              <input
-                                type="text"
-                                value={section.content}
-                                onChange={(e) => {
-                                  const newProjects = projects.map(p =>
-                                    p.id === project.id ? {
-                                      ...p,
-                                      sections: p.sections.map(s =>
-                                        s.id === section.id ? { ...s, content: e.target.value } : s
-                                      )
-                                    } : p
-                                  );
-                                  setProjects(newProjects);
-                                }}
-                                className="flex-1 glass rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-accent"
-                                placeholder="Content"
-                              />
-                              <button
-                                onClick={() => {
-                                  const newProjects = projects.map(p =>
-                                    p.id === project.id ? { ...p, sections: p.sections.filter(s => s.id !== section.id) } : p
-                                  );
-                                  setProjects(newProjects);
-                                }}
-                                className="text-red-400 hover:text-red-600 text-sm"
-                              >
-                                Remove
-                              </button>
-                            </div>
-                          ))}
-                          <button
-                            onClick={() => {
+              <div className="space-y-6">
+                {editMode ? (
+                  <div className="space-y-4">
+                    <h3 className="font-bold text-xl mb-4">Sections</h3>
+                    {project.sections.map((section, index) => (
+                      <div key={section.id} className="space-y-2">
+                        <select
+                          value={section.type}
+                          onChange={(e) => {
+                            const newProjects = projects.map(p =>
+                              p.id === project.id ? {
+                                ...p,
+                                sections: p.sections.map(s =>
+                                  s.id === section.id ? { ...s, type: e.target.value as Section['type'] } : s
+                                )
+                              } : p
+                            );
+                            setProjects(newProjects);
+                          }}
+                          className="glass rounded px-2 py-1 text-sm"
+                        >
+                          <option value="header">Header</option>
+                          <option value="image">Image</option>
+                          <option value="text">Text</option>
+                          <option value="title">Title</option>
+                          <option value="paragraph">Paragraph</option>
+                        </select>
+                        {section.type === 'image' ? (
+                          <div className="space-y-2">
+                            <input
+                              type="text"
+                              value={section.content}
+                              onChange={(e) => {
+                                const newProjects = projects.map(p =>
+                                  p.id === project.id ? {
+                                    ...p,
+                                    sections: p.sections.map(s =>
+                                      s.id === section.id ? { ...s, content: e.target.value } : s
+                                    )
+                                  } : p
+                                );
+                                setProjects(newProjects);
+                              }}
+                              className="w-full body-text bg-transparent border-b border-accent/50 focus:outline-none focus:border-accent"
+                              placeholder="Image URL"
+                            />
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => handleImageUpload(e, (url) => {
+                                const newProjects = projects.map(p =>
+                                  p.id === project.id ? {
+                                    ...p,
+                                    sections: p.sections.map(s =>
+                                      s.id === section.id ? { ...s, content: url } : s
+                                    )
+                                  } : p
+                                );
+                                setProjects(newProjects);
+                              })}
+                              className="w-full text-sm"
+                            />
+                            {section.content && (
+                              <Image src={section.content} alt="Preview" width={200} height={150} className="w-full h-auto rounded" />
+                            )}
+                          </div>
+                        ) : (
+                          <textarea
+                            value={section.content}
+                            onChange={(e) => {
                               const newProjects = projects.map(p =>
-                                p.id === project.id ? { ...p, sections: [...p.sections, { id: Date.now().toString(), type: 'text' as Section['type'], content: '' }] } : p
+                                p.id === project.id ? {
+                                  ...p,
+                                  sections: p.sections.map(s =>
+                                    s.id === section.id ? { ...s, content: e.target.value } : s
+                                  )
+                                } : p
                               );
                               setProjects(newProjects);
                             }}
-                            className="text-accent hover:text-accent/80 text-sm"
-                          >
-                            + Add Section
-                          </button>
-                        </div>
+                            className="w-full body-text bg-transparent border-b border-accent/50 focus:outline-none focus:border-accent resize-none"
+                            placeholder="Content"
+                            rows={3}
+                          />
+                        )}
+                        <button
+                          onClick={() => {
+                            const newProjects = projects.map(p =>
+                              p.id === project.id ? {
+                                ...p,
+                                sections: p.sections.filter(s => s.id !== section.id)
+                              } : p
+                            );
+                            setProjects(newProjects);
+                          }}
+                          className="text-red-400 hover:text-red-600 text-sm"
+                        >
+                          Remove Section
+                        </button>
                       </div>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {project.sections.map((section) => {
-                        if (section.type === 'header') return <h3 key={section.id} className="font-bold text-xl">{section.content}</h3>;
-                        if (section.type === 'image') return <img key={section.id} src={section.content} alt="" className="w-full rounded-lg" />;
-                        if (section.type === 'text') return <p key={section.id} className="body-text">{section.content}</p>;
-                        if (section.type === 'title') return <h2 key={section.id} className="font-bold text-2xl">{section.content}</h2>;
-                        return null;
-                      })}
-                    </div>
-                  )}
-                </div>
-                <div>
+                    ))}
+                    <button
+                      onClick={() => {
+                        const newProjects = projects.map(p =>
+                          p.id === project.id ? {
+                            ...p,
+                            sections: [...p.sections, { id: Date.now().toString(), type: 'paragraph' as Section['type'], content: '' }]
+                          } : p
+                        );
+                        setProjects(newProjects);
+                      }}
+                      className="glass px-4 py-2 rounded font-bold hover:bg-accent/10 transition-colors"
+                    >
+                      + Add Section
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    {project.sections.map((section, index) => {
+                      switch (section.type) {
+                        case 'title':
+                          return <h2 key={index} className="headline text-3xl mb-4">{section.content}</h2>;
+                        case 'header':
+                          return <h3 key={index} className="font-bold text-xl mb-4">{section.content}</h3>;
+                        case 'paragraph':
+                          return <p key={index} className="body-text mb-6">{section.content}</p>;
+                        case 'text':
+                          return <p key={index} className="body-text mb-6">{section.content}</p>;
+                        case 'image':
+                          return section.content ? (
+                            <Image key={index} src={section.content} alt="Section image" width={400} height={300} className="w-full h-auto rounded-lg mb-6" />
+                          ) : null;
+                        default:
+                          return null;
+                      }
+                    })}
+                  </div>
+                )}
+                <div className="mt-8">
                   {editMode ? (
                     <div className="space-y-4">
                       <div className="sticky-note p-4">
@@ -1284,7 +1396,7 @@ export default function Home() {
                       </div>
                       <div className="h-48 bg-gradient-to-br from-accent/20 to-accent/5 rounded-lg flex items-center justify-center relative">
                         {project.chartImageUrl ? (
-                          <img src={project.chartImageUrl} alt="Chart" className="w-full h-full object-cover rounded-lg" />
+                          <Image src={project.chartImageUrl} alt="Chart" fill className="object-cover rounded-lg" />
                         ) : (
                           <span className="text-6xl">📊</span>
                         )}
@@ -1325,7 +1437,7 @@ export default function Home() {
                       </div>
                       <div className="h-48 bg-gradient-to-br from-accent/20 to-accent/5 rounded-lg flex items-center justify-center">
                         {project.chartImageUrl ? (
-                          <img src={project.chartImageUrl} alt="Chart" className="w-full h-full object-cover rounded-lg" />
+                          <Image src={project.chartImageUrl} alt="Chart" fill className="object-cover rounded-lg" />
                         ) : (
                           <span className="text-6xl">📊</span>
                         )}

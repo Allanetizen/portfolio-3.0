@@ -7,7 +7,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 interface Section {
   id: string;
-  type: 'header' | 'image' | 'text' | 'title';
+  type: 'header' | 'image' | 'text' | 'title' | 'paragraph';
   content: string;
 }
 
@@ -254,6 +254,7 @@ export default function AdminPage() {
                               <option value="image">Image</option>
                               <option value="text">Text</option>
                               <option value="title">Title</option>
+                              <option value="paragraph">Paragraph</option>
                             </select>
                             <input
                               type="text"
