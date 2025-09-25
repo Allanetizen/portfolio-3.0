@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useDropzone } from 'react-dropzone';
+import Image from 'next/image';
 import { useAuth } from '../../contexts/AuthContext';
 
 interface Section {
@@ -26,6 +27,7 @@ interface Project {
   challenge: string;
   solution: string;
   chartImageUrl: string;
+  ctaLink?: string;
   sections: Section[];
 }
 
@@ -83,6 +85,7 @@ export default function AdminPage() {
       challenge: 'The challenge was to redesign the user experience for a complex application, making it intuitive and accessible to users.',
       solution: 'Implemented a clean, minimalist design with progressive disclosure, improving user experience and satisfaction.',
       chartImageUrl: '',
+      ctaLink: '',
       sections: []
     }
   ]);
@@ -272,55 +275,69 @@ export default function AdminPage() {
         {activeTab === 'projects' && (
           <div className="space-y-6">
             <h2 className="text-2xl font-bold mb-4">Manage Projects</h2>
-            {projects.map((project) => (
-              <motion.div
-                key={project.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="glass rounded-xl p-6"
-              >
-                <div className="flex justify-between items-center">
-                  <div>
-                    <h3 className="text-xl font-bold">{project.title}</h3>
-                    <p className="body-text">{project.description}</p>
-                    <div className="flex gap-2 mt-2">
-                      {project.tags.map((tag, index) => (
-                        <span key={index} className="px-2 py-1 bg-accent/10 rounded-full text-sm">{tag}</span>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {projects.map((project) => (
+                <motion.div
+                  key={project.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  className="glass rounded-xl p-6 cursor-pointer relative overflow-hidden"
+                  onClick={() => {
+                    setEditingProject(project);
+                    setEditStep('details');
+                  }}
+                >
+                  <div className="h-32 bg-gradient-to-br from-accent/20 to-accent/5 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
+                    {project.imageUrl ? (
+                      <Image src={project.imageUrl} alt={project.title} fill className="object-cover" />
+                    ) : (
+                      <span className="text-3xl">📱</span>
+                    )}
+                    {!project.imageUrl && (
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEditingProject(project);
+                          setEditStep('cover');
+                        }}
+                        className="absolute inset-0 bg-black/50 flex items-center justify-center text-white font-bold"
+                      >
+                        UPLOAD COVER
+                      </motion.button>
+                    )}
+                  </div>
+                  <div className="relative z-10">
+                    <h3 className="font-bold text-lg mb-2">{project.title}</h3>
+                    <p className="body-text mb-4 text-sm line-clamp-2">{project.description}</p>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {project.tags.slice(0, 2).map((tag, index) => (
+                        <span key={index} className="px-2 py-1 bg-accent/10 rounded-full text-xs">{tag}</span>
                       ))}
                     </div>
                   </div>
-                  <div className="flex gap-4">
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => {
-                        setEditingProject(project);
-                        setEditStep('cover');
-                      }}
-                      className="glass px-4 py-2 rounded-lg font-bold hover:bg-accent/10"
-                    >
-                      EDIT
-                    </motion.button>
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => {
-                        if (confirm('Are you sure you want to delete this project?')) {
-                          setProjects(projects.filter(p => p.id !== project.id));
-                        }
-                      }}
-                      className="glass px-4 py-2 rounded-lg font-bold hover:bg-red-500/10 text-red-400"
-                    >
-                      DELETE
-                    </motion.button>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-            <div className="flex justify-center">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (confirm('Are you sure you want to delete this project?')) {
+                        setProjects(projects.filter(p => p.id !== project.id));
+                      }
+                    }}
+                    className="absolute top-2 right-2 w-6 h-6 bg-red-500/80 hover:bg-red-500 text-white rounded-full flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-30"
+                  >
+                    ×
+                  </motion.button>
+                </motion.div>
+              ))}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                whileHover={{ scale: 1.02, y: -2 }}
+                className="glass rounded-xl p-6 flex items-center justify-center cursor-pointer min-h-[200px]"
                 onClick={() => {
                   const newProject: Project = {
                     id: projects.length + 1,
@@ -332,14 +349,17 @@ export default function AdminPage() {
                     challenge: 'Challenge description',
                     solution: 'Solution description',
                     chartImageUrl: '',
+                    ctaLink: '',
                     sections: []
                   };
                   setProjects([...projects, newProject]);
                 }}
-                className="glass px-6 py-3 rounded-lg font-bold hover:bg-accent/10"
               >
-                ADD PROJECT
-              </motion.button>
+                <div className="text-center">
+                  <div className="text-4xl mb-2">+</div>
+                  <div className="font-bold">ADD PROJECT</div>
+                </div>
+              </motion.div>
             </div>
           </div>
         )}
@@ -398,8 +418,64 @@ export default function AdminPage() {
           </div>
         )}
 
+        {/* Upload Cover Overlay */}
+        {editingProject && editStep === 'cover' && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+            onClick={() => setEditingProject(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              className="glass rounded-2xl p-8 max-w-md w-full relative"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button onClick={() => setEditingProject(null)} className="absolute top-4 right-4 text-2xl">&times;</button>
+              <h2 className="text-2xl font-bold mb-6">Upload Project Cover</h2>
+              <div className="space-y-4">
+                <div>
+                  <label className="block body-text mb-2">Cover Image URL</label>
+                  <input
+                    type="text"
+                    value={editingProject.imageUrl}
+                    onChange={(e) => updateEditingProject('imageUrl', e.target.value)}
+                    className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                    placeholder="Enter image URL"
+                  />
+                </div>
+                <div>
+                  <label className="block body-text mb-2">Or Upload Image</label>
+                  <ImageDropzone onUpload={(url) => updateEditingProject('imageUrl', url)} />
+                </div>
+                {editingProject.imageUrl && (
+                  <div className="mt-4">
+                    <img src={editingProject.imageUrl} alt="Cover" className="max-w-full max-h-64 object-cover rounded-lg" />
+                  </div>
+                )}
+              </div>
+              <div className="flex justify-end mt-6">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    saveEditingProject();
+                    setEditStep('details');
+                  }}
+                  disabled={!editingProject.imageUrl}
+                  className={`px-6 py-3 rounded-lg font-bold ${editingProject.imageUrl ? 'glass hover:bg-accent/10' : 'bg-gray-500 cursor-not-allowed'}`}
+                >
+                  Save Cover
+                </motion.button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+
         {/* Edit Project Overlay */}
-        {editingProject && (
+        {editingProject && editStep === 'details' && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -414,218 +490,188 @@ export default function AdminPage() {
               onClick={(e) => e.stopPropagation()}
             >
               <button onClick={() => setEditingProject(null)} className="absolute top-4 right-4 text-2xl">&times;</button>
-              <h2 className="text-3xl font-bold mb-6">Edit Project</h2>
-
-              {editStep === 'cover' && (
-                <div className="space-y-6">
-                  <h3 className="text-xl font-bold">Step 1: Upload Cover Image</h3>
+              <h2 className="text-3xl font-bold mb-6">Edit Project Details</h2>
+              <div className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-4">
                     <div>
-                      <label className="block body-text mb-2">Cover Image URL</label>
+                      <label className="block body-text mb-2">Title</label>
                       <input
                         type="text"
-                        value={editingProject.imageUrl}
-                        onChange={(e) => updateEditingProject('imageUrl', e.target.value)}
+                        value={editingProject.title}
+                        onChange={(e) => updateEditingProject('title', e.target.value)}
                         className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
-                        placeholder="Enter image URL or upload file"
                       />
                     </div>
                     <div>
-                      <label className="block body-text mb-2">Or Upload Image</label>
-                      <ImageDropzone onUpload={(url) => updateEditingProject('imageUrl', url)} />
+                      <label className="block body-text mb-2">Description</label>
+                      <textarea
+                        value={editingProject.description}
+                        onChange={(e) => updateEditingProject('description', e.target.value)}
+                        className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent h-20"
+                      />
                     </div>
-                    {editingProject.imageUrl && (
+                    <div>
+                      <label className="block body-text mb-2">Tags (comma separated)</label>
+                      <input
+                        type="text"
+                        value={editingProject.tags.join(', ')}
+                        onChange={(e) => updateEditingProject('tags', e.target.value.split(', '))}
+                        className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                      />
+                    </div>
+                    <div>
+                      <label className="block body-text mb-2">Challenge</label>
+                      <textarea
+                        value={editingProject.challenge}
+                        onChange={(e) => updateEditingProject('challenge', e.target.value)}
+                        className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent h-20"
+                      />
+                    </div>
+                    <div>
+                      <label className="block body-text mb-2">Solution</label>
+                      <textarea
+                        value={editingProject.solution}
+                        onChange={(e) => updateEditingProject('solution', e.target.value)}
+                        className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent h-20"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block body-text mb-2">Users Stat</label>
+                      <input
+                        type="text"
+                        value={editingProject.stats.users}
+                        onChange={(e) => updateEditingProject('stats', { ...editingProject.stats, users: e.target.value })}
+                        className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                      />
+                    </div>
+                    <div>
+                      <label className="block body-text mb-2">Rating Stat</label>
+                      <input
+                        type="text"
+                        value={editingProject.stats.rating}
+                        onChange={(e) => updateEditingProject('stats', { ...editingProject.stats, rating: e.target.value })}
+                        className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                      />
+                    </div>
+                    <div>
+                      <label className="block body-text mb-2">Growth Stat</label>
+                      <input
+                        type="text"
+                        value={editingProject.stats.growth}
+                        onChange={(e) => updateEditingProject('stats', { ...editingProject.stats, growth: e.target.value })}
+                        className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                      />
+                    </div>
+                    <div>
+                      <label className="block body-text mb-2">Chart Image URL</label>
+                      <input
+                        type="text"
+                        value={editingProject.chartImageUrl}
+                        onChange={(e) => updateEditingProject('chartImageUrl', e.target.value)}
+                        className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                        placeholder="Enter chart image URL or upload file"
+                      />
+                    </div>
+                    <div>
+                      <label className="block body-text mb-2">Or Upload Chart Image</label>
+                      <ImageDropzone onUpload={(url) => updateEditingProject('chartImageUrl', url)} />
+                    </div>
+                    {editingProject.chartImageUrl && (
                       <div className="mt-4">
-                        <img src={editingProject.imageUrl} alt="Cover" className="max-w-full max-h-64 object-cover rounded-lg" />
+                        <img src={editingProject.chartImageUrl} alt="Chart" className="max-w-full max-h-32 object-cover rounded" />
                       </div>
                     )}
                   </div>
-                  <div className="flex justify-end">
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => setEditStep('details')}
-                      disabled={!editingProject.imageUrl}
-                      className={`px-6 py-3 rounded-lg font-bold ${editingProject.imageUrl ? 'glass hover:bg-accent/10' : 'bg-gray-500 cursor-not-allowed'}`}
-                    >
-                      Next: Edit Details
-                    </motion.button>
-                  </div>
                 </div>
-              )}
-
-              {editStep === 'details' && (
-                <div className="space-y-6">
-                  <h3 className="text-xl font-bold">Step 2: Edit Project Details</h3>
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block body-text mb-2">Title</label>
-                        <input
-                          type="text"
-                          value={editingProject.title}
-                          onChange={(e) => updateEditingProject('title', e.target.value)}
-                          className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
-                        />
-                      </div>
-                      <div>
-                        <label className="block body-text mb-2">Description</label>
-                        <textarea
-                          value={editingProject.description}
-                          onChange={(e) => updateEditingProject('description', e.target.value)}
-                          className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent h-20"
-                        />
-                      </div>
-                      <div>
-                        <label className="block body-text mb-2">Tags (comma separated)</label>
-                        <input
-                          type="text"
-                          value={editingProject.tags.join(', ')}
-                          onChange={(e) => updateEditingProject('tags', e.target.value.split(', '))}
-                          className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
-                        />
-                      </div>
-                      <div>
-                        <label className="block body-text mb-2">Challenge</label>
-                        <textarea
-                          value={editingProject.challenge}
-                          onChange={(e) => updateEditingProject('challenge', e.target.value)}
-                          className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent h-20"
-                        />
-                      </div>
-                      <div>
-                        <label className="block body-text mb-2">Solution</label>
-                        <textarea
-                          value={editingProject.solution}
-                          onChange={(e) => updateEditingProject('solution', e.target.value)}
-                          className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent h-20"
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block body-text mb-2">Users Stat</label>
-                        <input
-                          type="text"
-                          value={editingProject.stats.users}
-                          onChange={(e) => updateEditingProject('stats', { ...editingProject.stats, users: e.target.value })}
-                          className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
-                        />
-                      </div>
-                      <div>
-                        <label className="block body-text mb-2">Rating Stat</label>
-                        <input
-                          type="text"
-                          value={editingProject.stats.rating}
-                          onChange={(e) => updateEditingProject('stats', { ...editingProject.stats, rating: e.target.value })}
-                          className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
-                        />
-                      </div>
-                      <div>
-                        <label className="block body-text mb-2">Growth Stat</label>
-                        <input
-                          type="text"
-                          value={editingProject.stats.growth}
-                          onChange={(e) => updateEditingProject('stats', { ...editingProject.stats, growth: e.target.value })}
-                          className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
-                        />
-                      </div>
-                      <div>
-                        <label className="block body-text mb-2">Chart Image URL</label>
-                        <input
-                          type="text"
-                          value={editingProject.chartImageUrl}
-                          onChange={(e) => updateEditingProject('chartImageUrl', e.target.value)}
-                          className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
-                          placeholder="Enter chart image URL or upload file"
-                        />
-                      </div>
-                      <div>
-                        <label className="block body-text mb-2">Or Upload Chart Image</label>
-                        <ImageDropzone onUpload={(url) => updateEditingProject('chartImageUrl', url)} />
-                      </div>
-                      {editingProject.chartImageUrl && (
-                        <div className="mt-4">
-                          <img src={editingProject.chartImageUrl} alt="Chart" className="max-w-full max-h-32 object-cover rounded" />
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block body-text mb-2">Sections</label>
-                    <div className="space-y-2">
-                      {editingProject.sections.map((section) => (
-                        <div key={section.id} className="flex gap-2 items-center">
-                          <select
-                            value={section.type}
+                <div>
+                  <label className="block body-text mb-2">Sections</label>
+                  <div className="space-y-2">
+                    {editingProject.sections.map((section) => (
+                      <div key={section.id} className="flex gap-2 items-center">
+                        <select
+                          value={section.type}
+                          onChange={(e) => {
+                            const newSections = editingProject.sections.map(s =>
+                              s.id === section.id ? { ...s, type: e.target.value as Section['type'] } : s
+                            );
+                            updateEditingProject('sections', newSections);
+                          }}
+                          className="glass rounded px-2 py-1 text-sm"
+                        >
+                          <option value="header">Header</option>
+                          <option value="image">Image</option>
+                          <option value="text">Text</option>
+                          <option value="title">Title</option>
+                          <option value="paragraph">Paragraph</option>
+                        </select>
+                        {section.type === 'image' ? (
+                          <div className="flex-1 space-y-2">
+                            {section.content && <img src={section.content} alt="Uploaded" className="max-w-32 max-h-32 object-cover rounded" />}
+                            <ImageDropzone onUpload={(url) => {
+                              const newSections = editingProject.sections.map(s =>
+                                s.id === section.id ? { ...s, content: url } : s
+                              );
+                              updateEditingProject('sections', newSections);
+                            }} />
+                          </div>
+                        ) : (
+                          <input
+                            type="text"
+                            value={section.content}
                             onChange={(e) => {
                               const newSections = editingProject.sections.map(s =>
-                                s.id === section.id ? { ...s, type: e.target.value as Section['type'] } : s
+                                s.id === section.id ? { ...s, content: e.target.value } : s
                               );
                               updateEditingProject('sections', newSections);
                             }}
-                            className="glass rounded px-2 py-1 text-sm"
-                          >
-                            <option value="header">Header</option>
-                            <option value="image">Image</option>
-                            <option value="text">Text</option>
-                            <option value="title">Title</option>
-                            <option value="paragraph">Paragraph</option>
-                          </select>
-                          {section.type === 'image' ? (
-                            <div className="flex-1 space-y-2">
-                              {section.content && <img src={section.content} alt="Uploaded" className="max-w-32 max-h-32 object-cover rounded" />}
-                              <ImageDropzone onUpload={(url) => {
-                                const newSections = editingProject.sections.map(s =>
-                                  s.id === section.id ? { ...s, content: url } : s
-                                );
-                                updateEditingProject('sections', newSections);
-                              }} />
-                            </div>
-                          ) : (
-                            <input
-                              type="text"
-                              value={section.content}
-                              onChange={(e) => {
-                                const newSections = editingProject.sections.map(s =>
-                                  s.id === section.id ? { ...s, content: e.target.value } : s
-                                );
-                                updateEditingProject('sections', newSections);
-                              }}
-                              className="flex-1 glass rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-accent"
-                              placeholder="Content"
-                            />
-                          )}
-                          <button
-                            onClick={() => {
-                              const newSections = editingProject.sections.filter(s => s.id !== section.id);
-                              updateEditingProject('sections', newSections);
-                            }}
-                            className="text-red-400 hover:text-red-600 text-sm"
-                          >
-                            Remove
-                          </button>
-                        </div>
-                      ))}
-                      <button
-                        onClick={() => {
-                          const newSection = { id: Date.now().toString(), type: 'text' as Section['type'], content: '' };
-                          updateEditingProject('sections', [...editingProject.sections, newSection]);
-                        }}
-                        className="text-accent hover:text-accent/80 text-sm"
-                      >
-                        + Add Section
-                      </button>
-                    </div>
+                            className="flex-1 glass rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-accent"
+                            placeholder="Content"
+                          />
+                        )}
+                        <button
+                          onClick={() => {
+                            const newSections = editingProject.sections.filter(s => s.id !== section.id);
+                            updateEditingProject('sections', newSections);
+                          }}
+                          className="text-red-400 hover:text-red-600 text-sm"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      onClick={() => {
+                        const newSection = { id: Date.now().toString(), type: 'text' as Section['type'], content: '' };
+                        updateEditingProject('sections', [...editingProject.sections, newSection]);
+                      }}
+                      className="text-accent hover:text-accent/80 text-sm"
+                    >
+                      + Add Section
+                    </button>
                   </div>
-                  <div className="flex justify-between">
+                </div>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <label className="block body-text mb-2">CTA Link (for "Read Full Case Study")</label>
+                    <input
+                      type="text"
+                      value={editingProject.ctaLink || ''}
+                      onChange={(e) => updateEditingProject('ctaLink', e.target.value)}
+                      className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                      placeholder="https://example.com/case-study"
+                    />
+                  </div>
+                  <div className="flex gap-4">
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      onClick={() => setEditStep('cover')}
+                      onClick={() => setEditingProject(null)}
                       className="glass px-6 py-3 rounded-lg font-bold hover:bg-accent/10"
                     >
-                      Back to Cover
+                      Cancel
                     </motion.button>
                     <motion.button
                       whileHover={{ scale: 1.05 }}
@@ -637,7 +683,7 @@ export default function AdminPage() {
                     </motion.button>
                   </div>
                 </div>
-              )}
+              </div>
             </motion.div>
           </motion.div>
         )}
