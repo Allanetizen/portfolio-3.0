@@ -270,17 +270,34 @@ export default function AdminPage() {
                         <span key={index} className="px-2 py-1 bg-accent/10 rounded-full text-xs">{tag}</span>
                       ))}
                     </div>
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => {
-                        setEditingProject(project);
-                        setEditStep('cover');
-                      }}
-                      className="w-full glass px-4 py-2 rounded-lg font-bold hover:bg-accent/10"
-                    >
-                      EDIT PROJECT
-                    </motion.button>
+                    <div className="flex gap-2">
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => {
+                          setEditingProject(project);
+                          setEditStep('cover');
+                        }}
+                        className="flex-1 glass px-2 py-2 rounded-lg font-bold hover:bg-accent/10 text-sm"
+                      >
+                        EDIT COVER
+                      </motion.button>
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => {
+                          if (project.imageUrl) {
+                            setEditingProject(project);
+                            setEditStep('details');
+                          } else {
+                            alert('Please set a cover image first by clicking "EDIT COVER"');
+                          }
+                        }}
+                        className="flex-1 glass px-2 py-2 rounded-lg font-bold hover:bg-accent/10 text-sm"
+                      >
+                        EDIT DETAILS
+                      </motion.button>
+                    </div>
                   </div>
                   <motion.button
                     whileHover={{ scale: 1.1 }}
@@ -429,18 +446,32 @@ export default function AdminPage() {
                 >
                   Cancel
                 </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => {
-                    saveEditingProject();
-                    setEditStep('details');
-                  }}
-                  disabled={!editingProject.imageUrl}
-                  className={`px-6 py-3 rounded-lg font-bold ${editingProject.imageUrl ? 'glass hover:bg-accent/10' : 'bg-gray-500 cursor-not-allowed'}`}
-                >
-                  Continue to Edit Details
-                </motion.button>
+                <div className="flex gap-2">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => {
+                      saveEditingProject();
+                      setEditingProject(null);
+                    }}
+                    disabled={!editingProject.imageUrl}
+                    className={`px-4 py-3 rounded-lg font-bold ${editingProject.imageUrl ? 'glass hover:bg-accent/10' : 'bg-gray-500 cursor-not-allowed'}`}
+                  >
+                    Save Cover
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => {
+                      saveEditingProject();
+                      setEditStep('details');
+                    }}
+                    disabled={!editingProject.imageUrl}
+                    className={`px-4 py-3 rounded-lg font-bold ${editingProject.imageUrl ? 'glass hover:bg-accent/10' : 'bg-gray-500 cursor-not-allowed'}`}
+                  >
+                    Continue to Edit Details
+                  </motion.button>
+                </div>
               </div>
             </motion.div>
           </motion.div>
