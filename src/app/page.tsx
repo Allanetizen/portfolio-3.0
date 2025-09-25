@@ -340,6 +340,7 @@ export default function Home() {
             initial={{ opacity: 0, y: -50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
+            viewport={{ once: true }}
             className="text-center mb-16"
           >
             {editMode ? (
@@ -674,6 +675,7 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
               className="flex-1 text-center md:text-left"
             >
               <h2 className="headline mb-6 bleed-text">VISUAL POETRY</h2>
@@ -700,6 +702,7 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
               className="relative"
             >
               <div className="sticky-note p-2 absolute -top-4 -left-4 z-10 rotate-6">
@@ -745,6 +748,7 @@ export default function Home() {
             <motion.h2
               initial={{ opacity: 0, y: -30 }}
               whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
               className="headline text-center mb-16"
             >
               EXPERIENCE
@@ -757,6 +761,7 @@ export default function Home() {
                     key={experience.id}
                     initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
                     whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
                     whileHover={{ scale: 1.05 }}
                     className={`relative flex flex-col md:flex-row items-center justify-${index % 2 === 0 ? 'end' : 'start'} md:p${index % 2 === 0 ? 'r' : 'l'}-8`}
                   >
@@ -928,6 +933,7 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             className="glass rounded-3xl p-12 max-w-2xl w-full text-center relative"
           >
             <h2 className="headline mb-8 bleed-text">LET'S WORK TOGETHER</h2>
