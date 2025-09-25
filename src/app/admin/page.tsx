@@ -253,31 +253,13 @@ export default function AdminPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   whileHover={{ scale: 1.02, y: -2 }}
-                  className="glass rounded-xl p-6 cursor-pointer relative overflow-hidden"
-                  onClick={() => {
-                    setEditingProject(project);
-                    setEditStep('details');
-                  }}
+                  className="glass rounded-xl p-6 relative overflow-hidden"
                 >
                   <div className="h-32 bg-gradient-to-br from-accent/20 to-accent/5 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
                     {project.imageUrl ? (
                       <Image src={project.imageUrl} alt={project.title} fill className="object-cover" />
                     ) : (
                       <span className="text-3xl">📱</span>
-                    )}
-                    {!project.imageUrl && (
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setEditingProject(project);
-                          setEditStep('cover');
-                        }}
-                        className="absolute inset-0 bg-black/50 flex items-center justify-center text-white font-bold"
-                      >
-                        UPLOAD COVER
-                      </motion.button>
                     )}
                   </div>
                   <div className="relative z-10">
@@ -288,6 +270,17 @@ export default function AdminPage() {
                         <span key={index} className="px-2 py-1 bg-accent/10 rounded-full text-xs">{tag}</span>
                       ))}
                     </div>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => {
+                        setEditingProject(project);
+                        setEditStep('cover');
+                      }}
+                      className="w-full glass px-4 py-2 rounded-lg font-bold hover:bg-accent/10"
+                    >
+                      EDIT PROJECT
+                    </motion.button>
                   </div>
                   <motion.button
                     whileHover={{ scale: 1.1 }}
@@ -427,7 +420,15 @@ export default function AdminPage() {
                   </div>
                 )}
               </div>
-              <div className="flex justify-end mt-6">
+              <div className="flex justify-between mt-6">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setEditingProject(null)}
+                  className="glass px-6 py-3 rounded-lg font-bold hover:bg-accent/10"
+                >
+                  Cancel
+                </motion.button>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -438,7 +439,7 @@ export default function AdminPage() {
                   disabled={!editingProject.imageUrl}
                   className={`px-6 py-3 rounded-lg font-bold ${editingProject.imageUrl ? 'glass hover:bg-accent/10' : 'bg-gray-500 cursor-not-allowed'}`}
                 >
-                  Save Cover
+                  Continue to Edit Details
                 </motion.button>
               </div>
             </motion.div>
@@ -461,7 +462,7 @@ export default function AdminPage() {
               onClick={(e) => e.stopPropagation()}
             >
               <button onClick={() => setEditingProject(null)} className="absolute top-4 right-4 text-2xl">&times;</button>
-              <h2 className="text-3xl font-bold mb-6">Edit Project Details</h2>
+              <h2 className="text-3xl font-bold mb-6">Edit Project Info</h2>
               <div className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-4">
@@ -640,6 +641,14 @@ export default function AdminPage() {
                     />
                   </div>
                   <div className="flex gap-4">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setEditStep('cover')}
+                      className="glass px-6 py-3 rounded-lg font-bold hover:bg-accent/10"
+                    >
+                      Back to Upload Cover
+                    </motion.button>
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
