@@ -145,12 +145,6 @@ export default function AdminPage() {
     }
   };
 
-  const updateProject = (id: number, field: keyof Project, value: unknown) => {
-    setProjects(projects.map(p =>
-      p.id === id ? { ...p, [field]: value } : p
-    ));
-  };
-
   const updateEditingProject = (field: keyof Project, value: unknown) => {
     if (editingProject) {
       setEditingProject({ ...editingProject, [field]: value });
@@ -167,29 +161,6 @@ export default function AdminPage() {
   const updateExperience = (id: number, field: keyof Experience, value: string) => {
     setExperiences(experiences.map(e =>
       e.id === id ? { ...e, [field]: value } : e
-    ));
-  };
-
-  const addSection = (projectId: number) => {
-    setProjects(projects.map(p =>
-      p.id === projectId ? { ...p, sections: [...p.sections, { id: Date.now().toString(), type: 'text', content: '' }] } : p
-    ));
-  };
-
-  const updateSection = (projectId: number, sectionId: string, field: keyof Section, value: string) => {
-    setProjects(projects.map(p =>
-      p.id === projectId ? {
-        ...p,
-        sections: p.sections.map(s =>
-          s.id === sectionId ? { ...s, [field]: value } : s
-        )
-      } : p
-    ));
-  };
-
-  const removeSection = (projectId: number, sectionId: string) => {
-    setProjects(projects.map(p =>
-      p.id === projectId ? { ...p, sections: p.sections.filter(s => s.id !== sectionId) } : p
     ));
   };
 
@@ -451,8 +422,8 @@ export default function AdminPage() {
                   <ImageDropzone onUpload={(url) => updateEditingProject('imageUrl', url)} />
                 </div>
                 {editingProject.imageUrl && (
-                  <div className="mt-4">
-                    <img src={editingProject.imageUrl} alt="Cover" className="max-w-full max-h-64 object-cover rounded-lg" />
+                  <div className="mt-4 relative w-full h-64">
+                    <Image src={editingProject.imageUrl} alt="Cover" fill className="object-cover rounded-lg" />
                   </div>
                 )}
               </div>
@@ -580,8 +551,8 @@ export default function AdminPage() {
                       <ImageDropzone onUpload={(url) => updateEditingProject('chartImageUrl', url)} />
                     </div>
                     {editingProject.chartImageUrl && (
-                      <div className="mt-4">
-                        <img src={editingProject.chartImageUrl} alt="Chart" className="max-w-full max-h-32 object-cover rounded" />
+                      <div className="mt-4 relative w-full h-32">
+                        <Image src={editingProject.chartImageUrl} alt="Chart" fill className="object-cover rounded" />
                       </div>
                     )}
                   </div>
@@ -609,7 +580,11 @@ export default function AdminPage() {
                         </select>
                         {section.type === 'image' ? (
                           <div className="flex-1 space-y-2">
-                            {section.content && <img src={section.content} alt="Uploaded" className="max-w-32 max-h-32 object-cover rounded" />}
+                            {section.content && (
+                              <div className="relative w-32 h-32">
+                                <Image src={section.content} alt="Uploaded" fill className="object-cover rounded" />
+                              </div>
+                            )}
                             <ImageDropzone onUpload={(url) => {
                               const newSections = editingProject.sections.map(s =>
                                 s.id === section.id ? { ...s, content: url } : s
@@ -655,7 +630,7 @@ export default function AdminPage() {
                 </div>
                 <div className="flex justify-between items-center">
                   <div>
-                    <label className="block body-text mb-2">CTA Link (for "Read Full Case Study")</label>
+                    <label className="block body-text mb-2">CTA Link (for &quot;Read Full Case Study&quot;)</label>
                     <input
                       type="text"
                       value={editingProject.ctaLink || ''}
