@@ -44,20 +44,20 @@ const defaultData = {
 
 async function getPortfolioData() {
   try {
-    // Use relative URL that works in both development and production
-    const baseUrl = process.env.VERCEL_URL 
-      ? `https://${process.env.VERCEL_URL}` 
-      : 'http://localhost:3000';
+    // Import the portfolio data directly from the JSON file
+    const fs = await import('fs');
+    const path = await import('path');
     
-    const response = await fetch(`${baseUrl}/api/portfolio`, {
-      cache: 'no-store'
-    });
-    if (!response.ok) {
-      throw new Error('Failed to fetch data');
+    const dataFile = path.join(process.cwd(), 'portfolio-data.json');
+    
+    if (fs.existsSync(dataFile)) {
+      const data = fs.readFileSync(dataFile, 'utf8');
+      return JSON.parse(data);
     }
-    return await response.json();
+    
+    return defaultData;
   } catch (error) {
-    console.error('Error fetching portfolio data:', error);
+    console.error('Error reading portfolio data:', error);
     return defaultData;
   }
 }
