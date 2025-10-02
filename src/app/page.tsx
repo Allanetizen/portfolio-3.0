@@ -1,6 +1,6 @@
-/* eslint-disable react/no-unescaped-entities */
-
 'use client';
+
+/* eslint-disable react/no-unescaped-entities */
 
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
@@ -84,7 +84,7 @@ export default function Home() {
   const [currentSection, setCurrentSection] = useState(0);
   const mainRef = useRef<HTMLDivElement>(null);
 
-  // Read-only state - initialize with default data, then fetch from API
+  // Initialize state with default data, then fetch from API
   const [projects, setProjects] = useState<Project[]>(defaultData.projects);
   const [experiences, setExperiences] = useState<Experience[]>(defaultData.experiences);
   const [heroName, setHeroName] = useState(defaultData.heroName);
@@ -97,13 +97,22 @@ export default function Home() {
   const [contactGitHub, setContactGitHub] = useState(defaultData.contactGitHub);
   const [profileImageUrl, setProfileImageUrl] = useState(defaultData.profileImageUrl);
   const [layout, setLayout] = useState<'regular' | 'bento' | 'circular'>(defaultData.layout as 'regular' | 'bento' | 'circular');
-  const [dataLoaded, setDataLoaded] = useState(true); // Start as true since we have default data
+  const [dataLoaded, setDataLoaded] = useState(false);
 
   // Fetch data from API on component mount
   useEffect(() => {
-    fetch('/api/portfolio')
+    console.log('Fetching data from API...');
+    fetch('/api/portfolio?' + Date.now(), {
+      cache: 'no-cache',
+      headers: {
+        'Cache-Control': 'no-cache'
+      }
+    })
       .then(response => response.json())
       .then(data => {
+        console.log('API data received:', data);
+        console.log('Hero name from API:', data.heroName);
+        console.log('Current hero name state:', heroName);
         // Update all state with fetched data
         setProjects(data.projects || []);
         setExperiences(data.experiences || []);
