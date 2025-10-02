@@ -58,6 +58,12 @@ export default function AdminPage() {
   const { isAuthenticated, logout } = useAuth();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('hero');
+  const [showPasswordChange, setShowPasswordChange] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [passwordSuccess, setPasswordSuccess] = useState('');
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [editStep, setEditStep] = useState<'cover' | 'details'>('cover');
   const [projects, setProjects] = useState<Project[]>([
@@ -215,6 +221,45 @@ export default function AdminPage() {
     }
   };
 
+  const handlePasswordChange = () => {
+    setPasswordError('');
+    setPasswordSuccess('');
+    
+    const storedPassword = localStorage.getItem('adminPassword') || 'admin123';
+    
+    if (currentPassword !== storedPassword) {
+      setPasswordError('Current password is incorrect');
+      return;
+    }
+    
+    if (newPassword !== confirmPassword) {
+      setPasswordError('New passwords do not match');
+      return;
+    }
+    
+    if (newPassword.length < 6) {
+      setPasswordError('New password must be at least 6 characters long');
+      return;
+    }
+    
+    // Update password in localStorage
+    localStorage.setItem('adminPassword', newPassword);
+    localStorage.setItem('passwordChangeTime', Date.now().toString());
+    
+    setPasswordSuccess('Password updated successfully!');
+    
+    // Clear form
+    setCurrentPassword('');
+    setNewPassword('');
+    setConfirmPassword('');
+    
+    // Hide form after success
+    setTimeout(() => {
+      setShowPasswordChange(false);
+      setPasswordSuccess('');
+    }, 2000);
+  };
+
   const updateEditingProject = (field: keyof Project, value: unknown) => {
     if (editingProject) {
       setEditingProject({ ...editingProject, [field]: value });
@@ -283,6 +328,15 @@ export default function AdminPage() {
             >
               SAVE CHANGES
             </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => setShowPasswordChange(!showPasswordChange)}
+              className="glass px-6 py-3 rounded-lg font-bold hover:bg-accent/10 text-accent"
+            >
+              CHANGE PASSWORD
+            </motion.button>
+            
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -599,6 +653,99 @@ export default function AdminPage() {
               </div>
             </div>
           </div>
+        )}
+
+        {/* Password Change Form */}
+        {showPasswordChange && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+            onClick={() => setShowPasswordChange(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              className="glass rounded-2xl p-8 max-w-md w-full relative"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button 
+                onClick={() => setShowPasswordChange(false)} 
+                className="absolute top-4 right-4 text-2xl hover:text-accent"
+              >
+                &times;
+              </button>
+              <h2 className="text-2xl font-bold mb-6">Change Password</h2>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block body-text mb-2">Current Password</label>
+                  <input
+                    type="password"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                    placeholder="Enter current password"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block body-text mb-2">New Password</label>
+                  <input
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                    placeholder="Enter new password"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block body-text mb-2">Confirm New Password</label>
+                  <input
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                    placeholder="Confirm new password"
+                  />
+                </div>
+                
+                {passwordError && (
+                  <div className="text-red-400 text-center body-text">
+                    {passwordError}
+                  </div>
+                )}
+                
+                {passwordSuccess && (
+                  <div className="text-green-400 text-center body-text">
+                    {passwordSuccess}
+                  </div>
+                )}
+              </div>
+              
+              <div className="flex justify-between mt-6">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setShowPasswordChange(false)}
+                  className="glass px-6 py-3 rounded-lg font-bold hover:bg-gray-500/10"
+                >
+                  CANCEL
+                </motion.button>
+                
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handlePasswordChange}
+                  className="glass px-6 py-3 rounded-lg font-bold hover:bg-accent/10"
+                >
+                  UPDATE PASSWORD
+                </motion.button>
+              </div>
+            </motion.div>
+          </motion.div>
         )}
 
         {/* Upload Cover Overlay */}

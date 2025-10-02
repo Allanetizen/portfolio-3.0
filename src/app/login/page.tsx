@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -13,8 +14,11 @@ export default function LoginPage() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Get stored password or use default
+    const storedPassword = localStorage.getItem('adminPassword') || 'admin123';
+    
     // Simple authentication - in production, use proper auth
-    if (email === 'admin@portfolio.com' && password === 'admin123') {
+    if (email === 'admin@portfolio.com' && password === storedPassword) {
       localStorage.setItem('isAuthenticated', 'true');
       router.push('/admin');
     } else {
@@ -69,6 +73,15 @@ export default function LoginPage() {
             LOGIN
           </motion.button>
         </form>
+
+        <div className="mt-6 text-center">
+          <Link 
+            href="/forgot-password" 
+            className="body-text text-accent hover:underline"
+          >
+            Forgot Password?
+          </Link>
+        </div>
 
       </motion.div>
     </div>
