@@ -1,5 +1,4 @@
 {
-  "heroName": "Test Name",
   "projects": [
     {
       "id": 1,
@@ -29,6 +28,7 @@
       "description": "Test experience"
     }
   ],
+  "heroName": "Test Name",
   "heroDescription": "Test description",
   "aboutText": "Test about",
   "contactEmail": "mailto:test@example.com",
