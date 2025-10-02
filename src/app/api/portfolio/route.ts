@@ -23,7 +23,7 @@ function readLocalData() {
   return null;
 }
 
-function writeLocalData(data: any) {
+function writeLocalData(data: unknown) {
   try {
     fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
     return true;

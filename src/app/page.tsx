@@ -95,8 +95,8 @@ export default function Home() {
   const [contactInstagram, setContactInstagram] = useState(defaultData.contactInstagram);
   const [contactMedium, setContactMedium] = useState(defaultData.contactMedium);
   const [contactGitHub, setContactGitHub] = useState(defaultData.contactGitHub);
-  const [profileImageUrl, setProfileImageUrl] = useState(defaultData.profileImageUrl);
-  const [layout, setLayout] = useState<'regular' | 'bento' | 'circular'>(defaultData.layout as 'regular' | 'bento' | 'circular');
+  const [profileImageUrl] = useState(defaultData.profileImageUrl);
+  const [layout] = useState<'regular' | 'bento' | 'circular'>(defaultData.layout as 'regular' | 'bento' | 'circular');
   const [dataLoaded, setDataLoaded] = useState(false);
 
   // Fetch data from API on component mount
@@ -112,7 +112,6 @@ export default function Home() {
       .then(data => {
         console.log('API data received:', data);
         console.log('Hero name from API:', data.heroName);
-        console.log('Current hero name state:', heroName);
         // Update all state with fetched data
         setProjects(data.projects || []);
         setExperiences(data.experiences || []);
@@ -124,8 +123,6 @@ export default function Home() {
         setContactInstagram(data.contactInstagram || 'https://instagram.com/yourprofile');
         setContactMedium(data.contactMedium || 'https://medium.com/@yourprofile');
         setContactGitHub(data.contactGitHub || 'https://github.com/yourprofile');
-        setProfileImageUrl(data.profileImageUrl || '');
-        setLayout(data.layout || 'regular');
         setDataLoaded(true);
       })
       .catch(error => {
@@ -136,6 +133,7 @@ export default function Home() {
 
   useEffect(() => {
     let scrollTimeout: NodeJS.Timeout;
+    const currentMainRef = mainRef.current;
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
@@ -170,7 +168,6 @@ export default function Home() {
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
-      const currentMainRef = mainRef.current;
       if (currentMainRef) {
         currentMainRef.removeEventListener('scroll', handleScroll);
       }
