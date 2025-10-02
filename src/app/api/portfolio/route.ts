@@ -8,7 +8,7 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY || 'dummy'
 );
 
-// Local storage fallback
+// Local storage fallback - use relative path for Vercel deployment
 const DATA_FILE = path.join(process.cwd(), 'portfolio-data.json');
 
 function readLocalData() {
