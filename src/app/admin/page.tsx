@@ -172,26 +172,38 @@ export default function AdminPage() {
   }
 
   const saveData = async () => {
-    const data = { 
-      projects, 
-      experiences, 
-      heroName, 
-      heroDescription, 
-      aboutText, 
-      contactEmail, 
-      contactLinkedIn, 
-      contactInstagram, 
-      contactMedium, 
-      contactGitHub, 
-      profileImageUrl, 
-      layout 
-    };
     try {
+      // First, fetch existing data to merge with current changes
+      const existingResponse = await fetch('/api/portfolio');
+      let existingData = {};
+      
+      if (existingResponse.ok) {
+        existingData = await existingResponse.json();
+      }
+      
+      // Merge existing data with current changes (current changes take precedence)
+      const mergedData = {
+        ...existingData,
+        projects, 
+        experiences, 
+        heroName, 
+        heroDescription, 
+        aboutText, 
+        contactEmail, 
+        contactLinkedIn, 
+        contactInstagram, 
+        contactMedium, 
+        contactGitHub, 
+        profileImageUrl, 
+        layout 
+      };
+      
       const response = await fetch('/api/portfolio', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+        body: JSON.stringify(mergedData)
       });
+      
       if (response.ok) {
         alert('Data saved successfully!');
       } else {
