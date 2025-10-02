@@ -42,12 +42,22 @@ interface Experience {
 interface PortfolioData {
   projects: Project[];
   experiences: Experience[];
+  heroName: string;
+  heroDescription: string;
+  aboutText: string;
+  contactEmail: string;
+  contactLinkedIn: string;
+  contactInstagram: string;
+  contactMedium: string;
+  contactGitHub: string;
+  profileImageUrl: string;
+  layout: 'regular' | 'bento' | 'circular';
 }
 
 export default function AdminPage() {
   const { isAuthenticated, logout } = useAuth();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState('projects');
+  const [activeTab, setActiveTab] = useState('hero');
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [editStep, setEditStep] = useState<'cover' | 'details'>('cover');
   const [projects, setProjects] = useState<Project[]>([
@@ -107,6 +117,18 @@ export default function AdminPage() {
     }
   ]);
 
+  // Hero and site content state
+  const [heroName, setHeroName] = useState('YOUR NAME');
+  const [heroDescription, setHeroDescription] = useState('Product Manager & Designer crafting innovative solutions with strategic thinking and creative design.');
+  const [aboutText, setAboutText] = useState('Crafting digital experiences that blend strategic thinking with artistic design. I bridge the gap between user needs and technical innovation, creating products that not only work beautifully but tell compelling stories.');
+  const [contactEmail, setContactEmail] = useState('mailto:your.email@example.com');
+  const [contactLinkedIn, setContactLinkedIn] = useState('https://linkedin.com/in/yourprofile');
+  const [contactInstagram, setContactInstagram] = useState('https://instagram.com/yourprofile');
+  const [contactMedium, setContactMedium] = useState('https://medium.com/@yourprofile');
+  const [contactGitHub, setContactGitHub] = useState('https://github.com/yourprofile');
+  const [profileImageUrl, setProfileImageUrl] = useState('');
+  const [layout, setLayout] = useState<'regular' | 'bento' | 'circular'>('regular');
+
   useEffect(() => {
     if (!isAuthenticated) {
       router.push('/login');
@@ -117,17 +139,53 @@ export default function AdminPage() {
         .then((data: PortfolioData) => {
           setProjects(data.projects);
           setExperiences(data.experiences);
+          setHeroName(data.heroName);
+          setHeroDescription(data.heroDescription);
+          setAboutText(data.aboutText);
+          setContactEmail(data.contactEmail);
+          setContactLinkedIn(data.contactLinkedIn);
+          setContactInstagram(data.contactInstagram);
+          setContactMedium(data.contactMedium);
+          setContactGitHub(data.contactGitHub);
+          setProfileImageUrl(data.profileImageUrl);
+          setLayout(data.layout);
         })
         .catch(error => console.error('Error loading data:', error));
     }
   }, [isAuthenticated, router]);
 
   if (!isAuthenticated) {
-    return null;
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <div className="glass rounded-3xl p-8 max-w-md w-full text-center">
+          <h1 className="headline text-2xl mb-4">Access Denied</h1>
+          <p className="body-text mb-6">Please log in to access the admin panel.</p>
+          <button
+            onClick={() => router.push('/login')}
+            className="glass px-6 py-3 rounded-lg hover:bg-accent/10 transition-colors"
+          >
+            Go to Login
+          </button>
+        </div>
+      </div>
+    );
   }
 
   const saveData = async () => {
-    const data = { projects, experiences };
+    const data = { 
+      projects, 
+      experiences, 
+      heroName, 
+      heroDescription, 
+      aboutText, 
+      contactEmail, 
+      contactLinkedIn, 
+      contactInstagram, 
+      contactMedium, 
+      contactGitHub, 
+      profileImageUrl, 
+      layout 
+    };
     try {
       const response = await fetch('/api/portfolio', {
         method: 'POST',
@@ -226,6 +284,14 @@ export default function AdminPage() {
 
         <div className="flex gap-6 mb-8">
           <button
+            onClick={() => setActiveTab('hero')}
+            className={`px-6 py-3 rounded-lg font-bold transition-colors ${
+              activeTab === 'hero' ? 'bg-accent text-white' : 'glass hover:bg-accent/10'
+            }`}
+          >
+            Hero & About
+          </button>
+          <button
             onClick={() => setActiveTab('projects')}
             className={`px-6 py-3 rounded-lg font-bold transition-colors ${
               activeTab === 'projects' ? 'bg-accent text-white' : 'glass hover:bg-accent/10'
@@ -241,7 +307,73 @@ export default function AdminPage() {
           >
             Experience
           </button>
+          <button
+            onClick={() => setActiveTab('contact')}
+            className={`px-6 py-3 rounded-lg font-bold transition-colors ${
+              activeTab === 'contact' ? 'bg-accent text-white' : 'glass hover:bg-accent/10'
+            }`}
+          >
+            Contact & Links
+          </button>
         </div>
+
+        {activeTab === 'hero' && (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold mb-4">Hero Section & About</h2>
+            <div className="glass rounded-xl p-6 space-y-6">
+              <div>
+                <label className="block body-text mb-2">Hero Name</label>
+                <input
+                  type="text"
+                  value={heroName}
+                  onChange={(e) => setHeroName(e.target.value)}
+                  className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                  placeholder="Your Name"
+                />
+              </div>
+              <div>
+                <label className="block body-text mb-2">Hero Description</label>
+                <textarea
+                  value={heroDescription}
+                  onChange={(e) => setHeroDescription(e.target.value)}
+                  className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent h-24"
+                  placeholder="Brief description of yourself and your role"
+                />
+              </div>
+              <div>
+                <label className="block body-text mb-2">About Text</label>
+                <textarea
+                  value={aboutText}
+                  onChange={(e) => setAboutText(e.target.value)}
+                  className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent h-32"
+                  placeholder="Detailed about section text"
+                />
+              </div>
+              <div>
+                <label className="block body-text mb-2">Profile Image URL</label>
+                <input
+                  type="text"
+                  value={profileImageUrl}
+                  onChange={(e) => setProfileImageUrl(e.target.value)}
+                  className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                  placeholder="https://example.com/profile.jpg"
+                />
+              </div>
+              <div>
+                <label className="block body-text mb-2">Layout Style</label>
+                <select
+                  value={layout}
+                  onChange={(e) => setLayout(e.target.value as 'regular' | 'bento' | 'circular')}
+                  className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                >
+                  <option value="regular">Regular</option>
+                  <option value="bento">Bento</option>
+                  <option value="circular">Circular</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        )}
 
         {activeTab === 'projects' && (
           <div className="space-y-6">
@@ -396,6 +528,64 @@ export default function AdminPage() {
                 </div>
               </motion.div>
             ))}
+          </div>
+        )}
+
+        {activeTab === 'contact' && (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold mb-4">Contact Information & Social Links</h2>
+            <div className="glass rounded-xl p-6 space-y-6">
+              <div>
+                <label className="block body-text mb-2">Email</label>
+                <input
+                  type="email"
+                  value={contactEmail}
+                  onChange={(e) => setContactEmail(e.target.value)}
+                  className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                  placeholder="mailto:your.email@example.com"
+                />
+              </div>
+              <div>
+                <label className="block body-text mb-2">LinkedIn URL</label>
+                <input
+                  type="url"
+                  value={contactLinkedIn}
+                  onChange={(e) => setContactLinkedIn(e.target.value)}
+                  className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                  placeholder="https://linkedin.com/in/yourprofile"
+                />
+              </div>
+              <div>
+                <label className="block body-text mb-2">Instagram URL</label>
+                <input
+                  type="url"
+                  value={contactInstagram}
+                  onChange={(e) => setContactInstagram(e.target.value)}
+                  className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                  placeholder="https://instagram.com/yourprofile"
+                />
+              </div>
+              <div>
+                <label className="block body-text mb-2">Medium URL</label>
+                <input
+                  type="url"
+                  value={contactMedium}
+                  onChange={(e) => setContactMedium(e.target.value)}
+                  className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                  placeholder="https://medium.com/@yourprofile"
+                />
+              </div>
+              <div>
+                <label className="block body-text mb-2">GitHub URL</label>
+                <input
+                  type="url"
+                  value={contactGitHub}
+                  onChange={(e) => setContactGitHub(e.target.value)}
+                  className="w-full glass rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+                  placeholder="https://github.com/yourprofile"
+                />
+              </div>
+            </div>
           </div>
         )}
 

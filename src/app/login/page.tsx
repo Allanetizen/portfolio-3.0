@@ -16,7 +16,7 @@ export default function LoginPage() {
     // Simple authentication - in production, use proper auth
     if (email === 'admin@portfolio.com' && password === 'admin123') {
       localStorage.setItem('isAuthenticated', 'true');
-      router.push('/');
+      router.push('/admin');
     } else {
       setError('Invalid credentials');
     }
