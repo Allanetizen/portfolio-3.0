@@ -107,9 +107,9 @@ export default function PortfolioClient({ data }: PortfolioClientProps) {
   }, []);
 
   const pageVariants = {
-    initial: { rotateY: -90, opacity: 0 },
-    in: { rotateY: 0, opacity: 1 },
-    out: { rotateY: 90, opacity: 0 }
+    initial: { opacity: 0 },
+    in: { opacity: 1 },
+    out: { opacity: 0 }
   };
 
   const sectionCount = 6; // Hero, Projects, About, Experience, Contact, Footer
@@ -133,7 +133,7 @@ export default function PortfolioClient({ data }: PortfolioClientProps) {
         animate="in"
         exit="out"
         variants={pageVariants}
-        transition={{ duration: 0.8, ease: "easeInOut" }}
+        transition={{ duration: 0.5, ease: "easeInOut" }}
       >
         {/* Hero Section */}
         <HeroSection

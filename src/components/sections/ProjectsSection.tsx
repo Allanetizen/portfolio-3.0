@@ -30,20 +30,18 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
 
   return (
     <section id="projects" className="w-screen h-screen flex flex-col items-center justify-center snap-center relative p-8">
-      <motion.h2
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        viewport={{ once: true }}
-        className="headline text-4xl font-bold mb-8 text-center"
-      >
+              <motion.h2
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="headline text-4xl font-bold mb-8 text-center"
+              >
         PROJECTS
       </motion.h2>
       <motion.div
         initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        viewport={{ once: true }}
         className="w-full max-w-6xl"
       >
         <div className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory">
@@ -59,11 +57,10 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
                 key={project.id}
                 className="flex-shrink-0 w-64 sm:w-72 md:w-80 h-72 sm:h-80 md:h-96 glass rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 snap-center cursor-pointer relative group overflow-visible"
                 onClick={() => setExpandedSection(expandedSection === `project-${project.id}` ? null : `project-${project.id}`)}
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
-                whileHover={{ scale: 1.02 }}
-                viewport={{ once: true }}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.3 }}
+                        whileHover={{ scale: 1.02 }}
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-accent/20 to-transparent rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="relative w-full h-32 sm:h-40 mb-4 rounded-lg overflow-hidden">

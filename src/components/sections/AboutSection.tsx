@@ -12,9 +12,8 @@ export default function AboutSection({ aboutText }: AboutSectionProps) {
       <div className="max-w-4xl mx-auto px-6 text-center">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          viewport={{ once: true }}
           className="glass p-8 md:p-12 rounded-2xl"
         >
           <h2 className="headline mb-6 bleed-text">VISUAL POETRY</h2>
