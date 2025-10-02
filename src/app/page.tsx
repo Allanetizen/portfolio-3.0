@@ -7,6 +7,47 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Background from '../components/Background';
 
+// Default data to ensure content is always available
+const defaultData = {
+  projects: [
+    {
+      id: 1,
+      title: "Project 1",
+      description: "Innovative app design with focus on user experience.",
+      tags: ["#UX", "#Mobile"],
+      stats: {
+        users: "+5k users",
+        rating: "⭐ 4.8 rating",
+        growth: "📈 40% growth"
+      },
+      imageUrl: "",
+      challenge: "The challenge was to redesign the user experience for a complex application, making it intuitive and accessible to users.",
+      solution: "Implemented a clean, minimalist design with progressive disclosure, improving user experience and satisfaction.",
+      chartImageUrl: "",
+      sections: []
+    }
+  ],
+  experiences: [
+    {
+      id: 1,
+      title: "Senior Product Manager",
+      company: "Company Name",
+      period: "2020 - Present",
+      description: "Led product strategy and design for key features, resulting in 40% user growth."
+    }
+  ],
+  heroName: "YOUR NAME",
+  heroDescription: "Product Manager & Designer crafting innovative solutions with strategic thinking and creative design.",
+  aboutText: "Crafting digital experiences that blend strategic thinking with artistic design. I bridge the gap between user needs and technical innovation, creating products that not only work beautifully but tell compelling stories.",
+  contactEmail: "mailto:your.email@example.com",
+  contactLinkedIn: "https://linkedin.com/in/yourprofile",
+  contactInstagram: "https://instagram.com/yourprofile",
+  contactMedium: "https://medium.com/@yourprofile",
+  contactGitHub: "https://github.com/yourprofile",
+  profileImageUrl: "",
+  layout: "regular"
+};
+
 interface Section {
   id: string;
   type: 'header' | 'image' | 'text' | 'title' | 'paragraph';
@@ -43,17 +84,20 @@ export default function Home() {
   const [currentSection, setCurrentSection] = useState(0);
   const mainRef = useRef<HTMLDivElement>(null);
 
-  // Read-only state - data will be fetched from API
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [experiences, setExperiences] = useState<Experience[]>([]);
-  const [heroName, setHeroName] = useState('YOUR NAME');
-  const [heroDescription, setHeroDescription] = useState('Product Manager & Designer crafting innovative solutions with strategic thinking and creative design.');
-  const [aboutText, setAboutText] = useState('Crafting digital experiences that blend strategic thinking with artistic design. I bridge the gap between user needs and technical innovation, creating products that not only work beautifully but tell compelling stories.');
-  const [contactEmail, setContactEmail] = useState('mailto:your.email@example.com');
-  const [contactLinkedIn, setContactLinkedIn] = useState('https://linkedin.com/in/yourprofile');
-  const [contactInstagram, setContactInstagram] = useState('https://instagram.com/yourprofile');
-  const [contactMedium, setContactMedium] = useState('https://medium.com/@yourprofile');
-  const [contactGitHub, setContactGitHub] = useState('https://github.com/yourprofile');
+  // Read-only state - initialize with default data, then fetch from API
+  const [projects, setProjects] = useState<Project[]>(defaultData.projects);
+  const [experiences, setExperiences] = useState<Experience[]>(defaultData.experiences);
+  const [heroName, setHeroName] = useState(defaultData.heroName);
+  const [heroDescription, setHeroDescription] = useState(defaultData.heroDescription);
+  const [aboutText, setAboutText] = useState(defaultData.aboutText);
+  const [contactEmail, setContactEmail] = useState(defaultData.contactEmail);
+  const [contactLinkedIn, setContactLinkedIn] = useState(defaultData.contactLinkedIn);
+  const [contactInstagram, setContactInstagram] = useState(defaultData.contactInstagram);
+  const [contactMedium, setContactMedium] = useState(defaultData.contactMedium);
+  const [contactGitHub, setContactGitHub] = useState(defaultData.contactGitHub);
+  const [profileImageUrl, setProfileImageUrl] = useState(defaultData.profileImageUrl);
+  const [layout, setLayout] = useState<'regular' | 'bento' | 'circular'>(defaultData.layout as 'regular' | 'bento' | 'circular');
+  const [dataLoaded, setDataLoaded] = useState(true); // Start as true since we have default data
 
   // Fetch data from API on component mount
   useEffect(() => {
@@ -71,8 +115,14 @@ export default function Home() {
         setContactInstagram(data.contactInstagram || 'https://instagram.com/yourprofile');
         setContactMedium(data.contactMedium || 'https://medium.com/@yourprofile');
         setContactGitHub(data.contactGitHub || 'https://github.com/yourprofile');
+        setProfileImageUrl(data.profileImageUrl || '');
+        setLayout(data.layout || 'regular');
+        setDataLoaded(true);
       })
-      .catch(error => console.error('Error loading data:', error));
+      .catch(error => {
+        console.error('Error loading data:', error);
+        setDataLoaded(true); // Still set to true to show default content
+      });
   }, []);
 
   useEffect(() => {
@@ -191,7 +241,21 @@ export default function Home() {
             </motion.h2>
             
             <div className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory">
-              {projects.map((project) => (
+              {!dataLoaded ? (
+                <div className="flex items-center justify-center w-full h-64">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto mb-4"></div>
+                    <p className="text-gray-600">Loading projects...</p>
+                  </div>
+                </div>
+              ) : projects.length === 0 ? (
+                <div className="flex items-center justify-center w-full h-64">
+                  <div className="text-center">
+                    <p className="text-gray-600">No projects available</p>
+                  </div>
+                </div>
+              ) : (
+                projects.map((project) => (
                   <motion.div
                     key={project.id}
                   initial={{ opacity: 0, scale: 0.8 }}
@@ -268,8 +332,9 @@ export default function Home() {
               </div>
                           </div>
                   </motion.div>
-                ))}
-              </div>
+                ))
+              )}
+            </div>
               </div>
         </section>
 
@@ -303,7 +368,21 @@ export default function Home() {
             </motion.h2>
             
             <div className="space-y-8">
-                {experiences.map((experience, index) => (
+              {!dataLoaded ? (
+                <div className="flex items-center justify-center w-full h-64">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto mb-4"></div>
+                    <p className="text-gray-600">Loading experience...</p>
+                  </div>
+                </div>
+              ) : experiences.length === 0 ? (
+                <div className="flex items-center justify-center w-full h-64">
+                  <div className="text-center">
+                    <p className="text-gray-600">No experience available</p>
+                  </div>
+                </div>
+              ) : (
+                experiences.map((experience, index) => (
                   <motion.div
                     key={experience.id}
                   initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
@@ -342,7 +421,8 @@ export default function Home() {
                       </>
                     )}
                   </motion.div>
-                ))}
+                ))
+              )}
             </div>
           </div>
         </section>
