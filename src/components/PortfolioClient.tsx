@@ -8,6 +8,7 @@ import ProjectsSection from './sections/ProjectsSection';
 import AboutSection from './sections/AboutSection';
 import ExperienceSection from './sections/ExperienceSection';
 import ContactSection from './sections/ContactSection';
+import FooterSection from './sections/FooterSection';
 
 interface Project {
   id: number;
@@ -111,7 +112,7 @@ export default function PortfolioClient({ data }: PortfolioClientProps) {
     out: { rotateY: 90, opacity: 0 }
   };
 
-  const sectionCount = 5; // Hero, Projects, About, Experience, Contact
+  const sectionCount = 6; // Hero, Projects, About, Experience, Contact, Footer
 
   const scrollToSection = (index: number) => {
     if (mainRef.current) {
@@ -160,19 +161,46 @@ export default function PortfolioClient({ data }: PortfolioClientProps) {
           contactMedium={contactMedium}
           contactGitHub={contactGitHub}
         />
+
+        {/* Footer Section */}
+        <FooterSection
+          contactEmail={contactEmail}
+          contactLinkedIn={contactLinkedIn}
+          contactInstagram={contactInstagram}
+          contactGitHub={contactGitHub}
+        />
       </motion.main>
 
-      <div className="fixed left-4 top-1/2 transform -translate-y-1/2 text-4xl opacity-50 cursor-pointer z-20" onClick={() => scrollToSection(currentSection - 1)}>←</div>
-      <div className="fixed right-4 top-1/2 transform -translate-y-1/2 text-4xl opacity-50 cursor-pointer z-20" onClick={() => scrollToSection(currentSection + 1)}>→</div>
+      <div 
+        className={`fixed left-4 top-1/2 transform -translate-y-1/2 text-4xl cursor-pointer z-20 transition-opacity ${
+          currentSection > 0 ? 'opacity-50 hover:opacity-100' : 'opacity-20 cursor-not-allowed'
+        }`} 
+        onClick={() => currentSection > 0 && scrollToSection(currentSection - 1)}
+      >
+        ←
+      </div>
+      <div 
+        className={`fixed right-4 top-1/2 transform -translate-y-1/2 text-4xl cursor-pointer z-20 transition-opacity ${
+          currentSection < sectionCount - 1 ? 'opacity-50 hover:opacity-100' : 'opacity-20 cursor-not-allowed'
+        }`} 
+        onClick={() => currentSection < sectionCount - 1 && scrollToSection(currentSection + 1)}
+      >
+        →
+      </div>
 
-      <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
-        {Array.from({ length: sectionCount }).map((_, index) => (
-          <div
-            key={index}
-            className={`w-3 h-3 rounded-full cursor-pointer transition-colors ${currentSection === index ? 'bg-accent' : 'bg-gray-400'}`}
-            onClick={() => scrollToSection(index)}
-          ></div>
-        ))}
+      <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-2 z-20">
+        <div className="flex gap-2">
+          {Array.from({ length: sectionCount }).map((_, index) => (
+            <div
+              key={index}
+              className={`w-3 h-3 rounded-full cursor-pointer transition-colors ${currentSection === index ? 'bg-accent' : 'bg-gray-400'}`}
+              onClick={() => scrollToSection(index)}
+            ></div>
+          ))}
+        </div>
+        <div className="text-xs text-gray-400 font-medium">
+          {['Hero', 'Projects', 'About', 'Experience', 'Contact', 'Footer'][currentSection]}
+        </div>
       </div>
     </div>
   );
