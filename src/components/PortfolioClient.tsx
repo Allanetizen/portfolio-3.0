@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Background from './Background';
 import HeroSection from './sections/HeroSection';
 import ProjectsSection from './sections/ProjectsSection';
@@ -89,6 +89,28 @@ export default function PortfolioClient({ data }: PortfolioClientProps) {
 
   const sectionCount = 6; // Hero, Projects, About, Experience, Contact, Footer
 
+  const scrollToSection = useCallback((index: number) => {
+    console.log('🎯 [CLIENT] Scrolling to section:', index, 'currentSection:', currentSection);
+    
+    if (mainRef.current) {
+      const sectionWidth = window.innerWidth;
+      const targetScrollLeft = index * sectionWidth;
+      
+      console.log('📍 [CLIENT] Scrolling to position:', targetScrollLeft, 'sectionWidth:', sectionWidth);
+      console.log('📏 [CLIENT] Main container scrollWidth:', mainRef.current.scrollWidth, 'clientWidth:', mainRef.current.clientWidth);
+      
+      mainRef.current.scrollTo({
+        left: targetScrollLeft,
+        behavior: 'smooth'
+      });
+      
+      // Update state immediately for better UX
+      setCurrentSection(index);
+    } else {
+      console.error('❌ [CLIENT] mainRef.current is null');
+    }
+  }, [currentSection]);
+
   useEffect(() => {
     console.log('🔄 [CLIENT] Setting up scroll handlers, currentSection:', currentSection);
 
@@ -111,8 +133,9 @@ export default function PortfolioClient({ data }: PortfolioClientProps) {
         const scrollLeft = mainRef.current.scrollLeft;
         const sectionWidth = window.innerWidth;
         const newSection = Math.round(scrollLeft / sectionWidth);
-        console.log('📜 [CLIENT] Scroll detected, newSection:', newSection, 'scrollLeft:', scrollLeft);
+        console.log('📜 [CLIENT] Scroll detected, scrollLeft:', scrollLeft, 'sectionWidth:', sectionWidth, 'newSection:', newSection, 'currentSection:', currentSection);
         if (newSection !== currentSection && newSection >= 0 && newSection < sectionCount) {
+          console.log('🔄 [CLIENT] Updating currentSection from', currentSection, 'to', newSection);
           setCurrentSection(newSection);
         }
       }
@@ -130,25 +153,7 @@ export default function PortfolioClient({ data }: PortfolioClientProps) {
         mainElement.removeEventListener('scroll', handleScroll);
       }
     };
-  }, [currentSection, sectionCount]);
-
-  const scrollToSection = (index: number) => {
-    console.log('🎯 [CLIENT] Scrolling to section:', index);
-    
-    if (mainRef.current) {
-      const sectionWidth = window.innerWidth;
-      const targetScrollLeft = index * sectionWidth;
-      
-      console.log('📍 [CLIENT] Scrolling to position:', targetScrollLeft);
-      
-      mainRef.current.scrollTo({
-        left: targetScrollLeft,
-        behavior: 'smooth'
-      });
-      
-      setCurrentSection(index);
-    }
-  };
+  }, [currentSection, sectionCount, scrollToSection]);
 
   return (
     <div className="min-h-screen overflow-hidden relative">
@@ -157,7 +162,10 @@ export default function PortfolioClient({ data }: PortfolioClientProps) {
         id="main-container"
         ref={mainRef}
         className="relative z-10 flex min-h-screen snap-x snap-mandatory overflow-x-auto scrollbar-hide"
-        style={{ width: `${sectionCount * 100}vw` }}
+        style={{ 
+          width: `${sectionCount * 100}vw`,
+          scrollBehavior: 'smooth'
+        }}
       >
         {/* Hero Section */}
         <div className="flex-shrink-0 w-screen h-screen">
