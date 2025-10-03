@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { scroller } from 'react-scroll';
 import Background from './Background';
 import HeroSection from './sections/HeroSection';
 import ProjectsSection from './sections/ProjectsSection';
@@ -87,63 +88,82 @@ export default function PortfolioClient({ data }: PortfolioClientProps) {
     aboutText: aboutText.substring(0, 30) + '...'
   });
 
-  useEffect(() => {
-    let scrollTimeout: NodeJS.Timeout;
-    const currentMainRef = mainRef.current;
+  const sectionCount = 6; // Hero, Projects, About, Experience, Contact, Footer
 
-    console.log('🔄 [CLIENT] Setting up scroll handlers, currentSection:', currentSection);
+  useEffect(() => {
+    console.log('🔄 [CLIENT] Setting up scroll handlers with react-scroll, currentSection:', currentSection);
 
     const handleKeyDown = (e: KeyboardEvent) => {
+      const sectionNames = ['hero', 'projects', 'about', 'experience', 'contact', 'footer'];
+      
       if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
-        currentMainRef?.scrollBy({ left: -window.innerWidth, behavior: 'smooth' });
+        e.preventDefault();
+        if (currentSection > 0) {
+          const newSection = currentSection - 1;
+          scrollToSection(newSection);
+        }
       } else if (e.key === 'ArrowRight' || e.key === 'PageDown') {
-        currentMainRef?.scrollBy({ left: window.innerWidth, behavior: 'smooth' });
+        e.preventDefault();
+        if (currentSection < sectionNames.length - 1) {
+          const newSection = currentSection + 1;
+          scrollToSection(newSection);
+        }
       }
     };
 
     const handleScroll = () => {
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(() => {
-        if (currentMainRef) {
-          const newSection = Math.round(currentMainRef.scrollLeft / window.innerWidth);
-          console.log('📜 [CLIENT] Scroll detected, newSection:', newSection, 'scrollLeft:', currentMainRef.scrollLeft, 'windowWidth:', window.innerWidth);
+      if (mainRef.current) {
+        const scrollLeft = mainRef.current.scrollLeft;
+        const sectionWidth = window.innerWidth;
+        const newSection = Math.round(scrollLeft / sectionWidth);
+        console.log('📜 [CLIENT] Scroll detected, newSection:', newSection, 'scrollLeft:', scrollLeft);
+        if (newSection !== currentSection && newSection >= 0 && newSection < sectionCount) {
           setCurrentSection(newSection);
         }
-      }, 100);
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
-    currentMainRef?.addEventListener('scroll', handleScroll);
+    const mainElement = mainRef.current;
+    if (mainElement) {
+      mainElement.addEventListener('scroll', handleScroll);
+    }
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
-      if (currentMainRef) {
-        currentMainRef.removeEventListener('scroll', handleScroll);
+      if (mainElement) {
+        mainElement.removeEventListener('scroll', handleScroll);
       }
-      clearTimeout(scrollTimeout);
     };
-  }, [currentSection]);
-
-  const sectionCount = 6; // Hero, Projects, About, Experience, Contact, Footer
+  }, [currentSection, sectionCount]);
 
   const scrollToSection = (index: number) => {
     console.log('🎯 [CLIENT] Scrolling to section:', index);
-    if (mainRef.current) {
-      const scrollPosition = index * window.innerWidth;
-      console.log('📍 [CLIENT] Scroll position:', scrollPosition, 'windowWidth:', window.innerWidth);
-      mainRef.current.scrollTo({
-        left: scrollPosition,
-        behavior: 'smooth',
-      });
-    }
+    
+    const sectionNames = ['hero', 'projects', 'about', 'experience', 'contact', 'footer'];
+    const targetSection = sectionNames[index];
+    
+    console.log('📍 [CLIENT] Target section:', targetSection);
+    
+    scroller.scrollTo(targetSection, {
+      duration: 800,
+      delay: 0,
+      smooth: 'easeInOutQuart',
+      containerId: 'main-container',
+      horizontal: true,
+      ignoreCancelEvents: false,
+    });
+    
+    setCurrentSection(index);
   };
 
   return (
     <div className="min-h-screen overflow-hidden">
       <Background currentSection={currentSection} />
       <main
+        id="main-container"
         ref={mainRef}
-        className="relative z-10 flex w-max min-h-screen snap-x snap-mandatory"
+        className="relative z-10 flex w-max min-h-screen snap-x snap-mandatory overflow-x-auto"
         style={{ width: `${sectionCount * 100}vw` }}
       >
         {/* Hero Section */}
