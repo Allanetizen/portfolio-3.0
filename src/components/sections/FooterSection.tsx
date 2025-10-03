@@ -21,28 +21,28 @@ export default function FooterSection({
   });
   
   return (
-    <section id="footer" className="w-screen h-screen flex items-center justify-center snap-center relative">
+    <section id="footer" className="w-screen h-screen flex items-center justify-center snap-center relative bg-blue-500/10">
       <div className="max-w-4xl mx-auto px-6 text-center">
-        <div className="glass p-8 md:p-12 rounded-2xl">
-          <h2 className="headline text-3xl md:text-4xl mb-8 bleed-text">THANK YOU</h2>
-          <p className="body-text text-lg md:text-xl mb-8">Thanks for exploring my portfolio. Let&apos;s create something amazing together.</p>
+        <div className="glass p-8 md:p-12 rounded-2xl bg-white/20">
+          <h2 className="headline text-3xl md:text-4xl mb-8 bleed-text text-white">THANK YOU</h2>
+          <p className="body-text text-lg md:text-xl mb-8 text-white">Thanks for exploring my portfolio. Let&apos;s create something amazing together.</p>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <a href={contactEmail} className="glass p-4 rounded-lg hover:bg-accent/10 transition-colors text-center">
+            <a href={contactEmail} className="glass p-4 rounded-lg hover:bg-accent/10 transition-colors text-center bg-white/10">
               <div className="text-2xl mb-2">📧</div>
-              <div className="text-sm font-medium">Email</div>
+              <div className="text-sm font-medium text-white">Email</div>
             </a>
-            <a href={contactLinkedIn} target="_blank" rel="noopener noreferrer" className="glass p-4 rounded-lg hover:bg-accent/10 transition-colors text-center">
+            <a href={contactLinkedIn} target="_blank" rel="noopener noreferrer" className="glass p-4 rounded-lg hover:bg-accent/10 transition-colors text-center bg-white/10">
               <div className="text-2xl mb-2">💼</div>
-              <div className="text-sm font-medium">LinkedIn</div>
+              <div className="text-sm font-medium text-white">LinkedIn</div>
             </a>
-            <a href={contactInstagram} target="_blank" rel="noopener noreferrer" className="glass p-4 rounded-lg hover:bg-accent/10 transition-colors text-center">
+            <a href={contactInstagram} target="_blank" rel="noopener noreferrer" className="glass p-4 rounded-lg hover:bg-accent/10 transition-colors text-center bg-white/10">
               <div className="text-2xl mb-2">📸</div>
-              <div className="text-sm font-medium">Instagram</div>
+              <div className="text-sm font-medium text-white">Instagram</div>
             </a>
-            <a href={contactGitHub} target="_blank" rel="noopener noreferrer" className="glass p-4 rounded-lg hover:bg-accent/10 transition-colors text-center">
+            <a href={contactGitHub} target="_blank" rel="noopener noreferrer" className="glass p-4 rounded-lg hover:bg-accent/10 transition-colors text-center bg-white/10">
               <div className="text-2xl mb-2">🐙</div>
-              <div className="text-sm font-medium">GitHub</div>
+              <div className="text-sm font-medium text-white">GitHub</div>
             </a>
           </div>
 

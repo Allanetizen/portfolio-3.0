@@ -24,7 +24,7 @@ export default function ContactSection({
   });
   
   return (
-    <section id="contact" className="w-screen h-screen flex items-center justify-center snap-center relative">
+    <section id="contact" className="w-screen h-screen flex items-center justify-center snap-center relative bg-orange-500/10">
       <div className="max-w-4xl mx-auto px-6 text-center">
         <div className="glass p-8 md:p-12 rounded-2xl">
           <h2 className="headline text-3xl md:text-4xl mb-8 bleed-text">LET&apos;S CONNECT</h2>

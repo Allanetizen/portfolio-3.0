@@ -19,8 +19,8 @@ export default function ExperienceSection({ experiences }: ExperienceSectionProp
   });
   
   return (
-    <section id="experience" className="w-screen h-screen flex flex-col items-center justify-center snap-center relative p-8">
-              <h2 className="headline text-4xl font-bold mb-12 text-center">
+    <section id="experience" className="w-screen h-screen flex flex-col items-center justify-center snap-center relative p-8 bg-yellow-500/10">
+              <h2 className="headline text-4xl font-bold mb-12 text-center text-white">
                 EXPERIENCE
               </h2>
               <div className="w-full max-w-6xl">

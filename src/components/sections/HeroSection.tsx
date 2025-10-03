@@ -16,15 +16,15 @@ export default function HeroSection({
   contactGitHub
 }: HeroSectionProps) {
   return (
-    <section id="hero" className="w-screen h-screen flex items-center justify-center snap-center relative">
+    <section id="hero" className="w-screen h-screen flex items-center justify-center snap-center relative bg-green-500/10">
       <div className="text-center max-w-4xl mx-auto px-6">
-        <div className="glass p-8 md:p-12 rounded-2xl">
-          <h1 className="headline text-4xl md:text-6xl mb-6 bleed-text">{heroName}</h1>
-          <p className="body-text text-lg md:text-xl mb-8 max-w-2xl mx-auto">{heroDescription}</p>
+        <div className="glass p-8 md:p-12 rounded-2xl bg-white/20">
+          <h1 className="headline text-4xl md:text-6xl mb-6 bleed-text text-white">{heroName}</h1>
+          <p className="body-text text-lg md:text-xl mb-8 max-w-2xl mx-auto text-white">{heroDescription}</p>
           <div className="flex flex-wrap justify-center gap-4">
-            <a href={contactEmail} className="glass px-6 py-3 rounded-lg hover:bg-accent/10 transition-colors">📧 Contact</a>
-            <a href={contactLinkedIn} target="_blank" rel="noopener noreferrer" className="glass px-6 py-3 rounded-lg hover:bg-accent/10 transition-colors">💼 LinkedIn</a>
-            <a href={contactGitHub} target="_blank" rel="noopener noreferrer" className="glass px-6 py-3 rounded-lg hover:bg-accent/10 transition-colors">🐙 GitHub</a>
+            <a href={contactEmail} className="glass px-6 py-3 rounded-lg hover:bg-accent/10 transition-colors bg-white/10 text-white">📧 Contact</a>
+            <a href={contactLinkedIn} target="_blank" rel="noopener noreferrer" className="glass px-6 py-3 rounded-lg hover:bg-accent/10 transition-colors bg-white/10 text-white">💼 LinkedIn</a>
+            <a href={contactGitHub} target="_blank" rel="noopener noreferrer" className="glass px-6 py-3 rounded-lg hover:bg-accent/10 transition-colors bg-white/10 text-white">🐙 GitHub</a>
           </div>
         </div>
       </div>
