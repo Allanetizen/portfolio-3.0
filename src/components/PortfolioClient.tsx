@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { scroller } from 'react-scroll';
 import Background from './Background';
 import HeroSection from './sections/HeroSection';
 import ProjectsSection from './sections/ProjectsSection';
@@ -91,22 +90,18 @@ export default function PortfolioClient({ data }: PortfolioClientProps) {
   const sectionCount = 6; // Hero, Projects, About, Experience, Contact, Footer
 
   useEffect(() => {
-    console.log('🔄 [CLIENT] Setting up scroll handlers with react-scroll, currentSection:', currentSection);
+    console.log('🔄 [CLIENT] Setting up scroll handlers, currentSection:', currentSection);
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      const sectionNames = ['hero', 'projects', 'about', 'experience', 'contact', 'footer'];
-      
       if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
         e.preventDefault();
         if (currentSection > 0) {
-          const newSection = currentSection - 1;
-          scrollToSection(newSection);
+          scrollToSection(currentSection - 1);
         }
       } else if (e.key === 'ArrowRight' || e.key === 'PageDown') {
         e.preventDefault();
-        if (currentSection < sectionNames.length - 1) {
-          const newSection = currentSection + 1;
-          scrollToSection(newSection);
+        if (currentSection < sectionCount - 1) {
+          scrollToSection(currentSection + 1);
         }
       }
     };
@@ -140,21 +135,19 @@ export default function PortfolioClient({ data }: PortfolioClientProps) {
   const scrollToSection = (index: number) => {
     console.log('🎯 [CLIENT] Scrolling to section:', index);
     
-    const sectionNames = ['hero', 'projects', 'about', 'experience', 'contact', 'footer'];
-    const targetSection = sectionNames[index];
-    
-    console.log('📍 [CLIENT] Target section:', targetSection);
-    
-    scroller.scrollTo(targetSection, {
-      duration: 800,
-      delay: 0,
-      smooth: 'easeInOutQuart',
-      containerId: 'main-container',
-      horizontal: true,
-      ignoreCancelEvents: false,
-    });
-    
-    setCurrentSection(index);
+    if (mainRef.current) {
+      const sectionWidth = window.innerWidth;
+      const targetScrollLeft = index * sectionWidth;
+      
+      console.log('📍 [CLIENT] Scrolling to position:', targetScrollLeft);
+      
+      mainRef.current.scrollTo({
+        left: targetScrollLeft,
+        behavior: 'smooth'
+      });
+      
+      setCurrentSection(index);
+    }
   };
 
   return (
@@ -163,7 +156,7 @@ export default function PortfolioClient({ data }: PortfolioClientProps) {
       <main
         id="main-container"
         ref={mainRef}
-        className="relative z-10 flex w-max min-h-screen snap-x snap-mandatory overflow-x-auto"
+        className="relative z-10 flex min-h-screen snap-x snap-mandatory overflow-x-auto scrollbar-hide"
         style={{ width: `${sectionCount * 100}vw` }}
       >
         {/* Hero Section */}
