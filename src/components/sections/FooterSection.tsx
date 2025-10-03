@@ -1,7 +1,5 @@
 'use client';
 
-import { motion } from 'framer-motion';
-
 interface FooterSectionProps {
   contactEmail: string;
   contactLinkedIn: string;
@@ -18,12 +16,7 @@ export default function FooterSection({
   return (
     <section id="footer" className="w-screen h-screen flex items-center justify-center snap-center relative">
       <div className="max-w-4xl mx-auto px-6 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="glass p-8 md:p-12 rounded-2xl"
-        >
+        <div className="glass p-8 md:p-12 rounded-2xl">
           <h2 className="headline text-3xl md:text-4xl mb-8 bleed-text">THANK YOU</h2>
           <p className="body-text text-lg md:text-xl mb-8">Thanks for exploring my portfolio. Let&apos;s create something amazing together.</p>
           
@@ -51,7 +44,7 @@ export default function FooterSection({
               © 2024 Portfolio. Built with Next.js, Framer Motion & Tailwind CSS.
             </p>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
 import Background from './Background';
 import HeroSection from './sections/HeroSection';
 import ProjectsSection from './sections/ProjectsSection';
@@ -106,12 +105,6 @@ export default function PortfolioClient({ data }: PortfolioClientProps) {
     };
   }, []);
 
-  const pageVariants = {
-    initial: { opacity: 0 },
-    in: { opacity: 1 },
-    out: { opacity: 0 }
-  };
-
   const sectionCount = 6; // Hero, Projects, About, Experience, Contact, Footer
 
   const scrollToSection = (index: number) => {
@@ -126,14 +119,9 @@ export default function PortfolioClient({ data }: PortfolioClientProps) {
   return (
     <div className="min-h-screen overflow-hidden">
       <Background currentSection={currentSection} />
-      <motion.main
+      <main
         ref={mainRef}
         className="relative z-10 flex w-max min-h-screen snap-x snap-mandatory"
-        initial="initial"
-        animate="in"
-        exit="out"
-        variants={pageVariants}
-        transition={{ duration: 0.5, ease: "easeInOut" }}
       >
         {/* Hero Section */}
         <HeroSection
@@ -169,7 +157,7 @@ export default function PortfolioClient({ data }: PortfolioClientProps) {
           contactInstagram={contactInstagram}
           contactGitHub={contactGitHub}
         />
-      </motion.main>
+      </main>
 
       <div 
         className={`fixed left-4 top-1/2 transform -translate-y-1/2 text-4xl cursor-pointer z-20 transition-opacity ${

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import Image from 'next/image';
 
 interface Project {
@@ -30,20 +29,10 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
 
   return (
     <section id="projects" className="w-screen h-screen flex flex-col items-center justify-center snap-center relative p-8">
-              <motion.h2
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="headline text-4xl font-bold mb-8 text-center"
-              >
-        PROJECTS
-      </motion.h2>
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className="w-full max-w-6xl"
-      >
+              <h2 className="headline text-4xl font-bold mb-8 text-center">
+                PROJECTS
+              </h2>
+              <div className="w-full max-w-6xl">
         <div className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory">
           {projects.length === 0 ? (
             <div className="flex items-center justify-center w-full h-64">
@@ -52,16 +41,12 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
               </div>
             </div>
           ) : (
-            projects.map((project) => (
-              <motion.div
-                key={project.id}
-                className="flex-shrink-0 w-64 sm:w-72 md:w-80 h-72 sm:h-80 md:h-96 glass rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 snap-center cursor-pointer relative group overflow-visible"
-                onClick={() => setExpandedSection(expandedSection === `project-${project.id}` ? null : `project-${project.id}`)}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.3 }}
-                        whileHover={{ scale: 1.02 }}
-              >
+                    projects.map((project) => (
+                      <div
+                        key={project.id}
+                        className="flex-shrink-0 w-64 sm:w-72 md:w-80 h-72 sm:h-80 md:h-96 glass rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 snap-center cursor-pointer relative group overflow-visible hover:scale-105 transition-transform duration-300"
+                        onClick={() => setExpandedSection(expandedSection === `project-${project.id}` ? null : `project-${project.id}`)}
+                      >
                 <div className="absolute inset-0 bg-gradient-to-br from-accent/20 to-transparent rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="relative w-full h-32 sm:h-40 mb-4 rounded-lg overflow-hidden">
                   {project.imageUrl ? (
@@ -91,27 +76,21 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
                     <div>{project.stats.users}</div>
                     <div>{project.stats.rating}</div>
                     <div>{project.stats.growth}</div>
-                  </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
-              </motion.div>
-            ))
-          )}
-        </div>
-      </motion.div>
+              </div>
 
       {expandedSection && projects.find(p => `project-${p.id}` === expandedSection) && (
-        <motion.div
+        <div
           className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
           onClick={() => setExpandedSection(null)}
         >
-          <motion.div
+          <div
             className="glass rounded-2xl p-8 max-w-3xl w-full max-h-[90vh] overflow-y-auto relative"
-            initial={{ scale: 0.9, y: 20 }}
-            animate={{ scale: 1, y: 0 }}
-            exit={{ scale: 0.9, y: 20 }}
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -158,8 +137,8 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
                 </div>
               );
             })()}
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       )}
     </section>
   );
