@@ -18,7 +18,7 @@ export default function ForgotPasswordPage() {
     e.preventDefault();
     
     // Simple validation - in production, use proper email verification
-    if (email === 'admin@portfolio.com') {
+    if (email === 'kiballkip@gmail.com') {
       setStep('reset');
       setSuccess('Email verified. You can now reset your password.');
     } else {

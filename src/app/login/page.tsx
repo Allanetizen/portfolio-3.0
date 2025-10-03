@@ -14,12 +14,14 @@ export default function LoginPage() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Get stored password or use default
-    const storedPassword = localStorage.getItem('adminPassword') || 'admin123';
+    // Set the admin credentials
+    const adminEmail = 'kiballkip@gmail.com';
+    const adminPassword = 'Luget@portfolio@A1XJ1';
     
     // Simple authentication - in production, use proper auth
-    if (email === 'admin@portfolio.com' && password === storedPassword) {
+    if (email === adminEmail && password === adminPassword) {
       localStorage.setItem('isAuthenticated', 'true');
+      localStorage.setItem('adminPassword', adminPassword);
       router.push('/admin');
     } else {
       setError('Invalid credentials');
