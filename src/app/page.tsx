@@ -44,32 +44,69 @@ const defaultData = {
 
 async function getPortfolioData() {
   try {
-    console.log('🔍 [SERVER] Starting to fetch portfolio data...');
+    console.log('🔍 [SERVER] Starting to fetch portfolio data from API...');
     
-    // Import the portfolio data directly from the JSON file
-    const fs = await import('fs');
-    const path = await import('path');
+    // Fetch data from API endpoint
+    const baseUrl = process.env.VERCEL_URL 
+      ? `https://${process.env.VERCEL_URL}` 
+      : 'http://localhost:3000';
     
-    const dataFile = path.join(process.cwd(), 'portfolio-data.json');
-    console.log('📁 [SERVER] Data file path:', dataFile);
+    const response = await fetch(`${baseUrl}/api/portfolio`, {
+      next: { revalidate: 60 }, // Cache for 60 seconds
+    });
     
-    if (fs.existsSync(dataFile)) {
-      console.log('✅ [SERVER] Data file exists, reading...');
-      const data = fs.readFileSync(dataFile, 'utf8');
-      const parsedData = JSON.parse(data);
-      console.log('📊 [SERVER] Loaded data:', {
-        projects: parsedData.projects?.length || 0,
-        experiences: parsedData.experiences?.length || 0,
-        heroName: parsedData.heroName,
-        aboutText: parsedData.aboutText?.substring(0, 50) + '...'
+    if (response.ok) {
+      const data = await response.json();
+      console.log('✅ [SERVER] Successfully fetched data from API:', {
+        projects: data.projects?.length || 0,
+        experiences: data.experiences?.length || 0,
+        heroName: data.heroName,
+        aboutText: data.aboutText?.substring(0, 50) + '...'
       });
-      return parsedData;
+      return data;
+    } else {
+      console.log('⚠️ [SERVER] API request failed, falling back to local file');
+      
+      // Fallback to local file
+      const fs = await import('fs');
+      const path = await import('path');
+      
+      const dataFile = path.join(process.cwd(), 'portfolio-data.json');
+      
+      if (fs.existsSync(dataFile)) {
+        const data = fs.readFileSync(dataFile, 'utf8');
+        const parsedData = JSON.parse(data);
+        console.log('📊 [SERVER] Loaded data from local file:', {
+          projects: parsedData.projects?.length || 0,
+          experiences: parsedData.experiences?.length || 0,
+          heroName: parsedData.heroName
+        });
+        return parsedData;
+      }
+      
+      console.log('⚠️ [SERVER] No local file found, using default data');
+      return defaultData;
+    }
+  } catch (error) {
+    console.error('❌ [SERVER] Error fetching portfolio data:', error);
+    
+    // Final fallback to local file
+    try {
+      const fs = await import('fs');
+      const path = await import('path');
+      
+      const dataFile = path.join(process.cwd(), 'portfolio-data.json');
+      
+      if (fs.existsSync(dataFile)) {
+        const data = fs.readFileSync(dataFile, 'utf8');
+        const parsedData = JSON.parse(data);
+        console.log('📊 [SERVER] Fallback: Loaded data from local file');
+        return parsedData;
+      }
+    } catch (fallbackError) {
+      console.error('❌ [SERVER] Fallback also failed:', fallbackError);
     }
     
-    console.log('⚠️ [SERVER] Data file not found, using default data');
-    return defaultData;
-  } catch (error) {
-    console.error('❌ [SERVER] Error reading portfolio data:', error);
     return defaultData;
   }
 }
