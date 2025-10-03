@@ -151,7 +151,7 @@ export default function PortfolioClient({ data }: PortfolioClientProps) {
   };
 
   return (
-    <div className="min-h-screen overflow-hidden">
+    <div className="min-h-screen overflow-hidden relative">
       <Background currentSection={currentSection} />
       <main
         id="main-container"
@@ -160,39 +160,51 @@ export default function PortfolioClient({ data }: PortfolioClientProps) {
         style={{ width: `${sectionCount * 100}vw` }}
       >
         {/* Hero Section */}
-        <HeroSection
-          heroName={heroName}
-          heroDescription={heroDescription}
-          contactEmail={contactEmail}
-          contactLinkedIn={contactLinkedIn}
-          contactGitHub={contactGitHub}
-        />
+        <div className="flex-shrink-0 w-screen h-screen">
+          <HeroSection
+            heroName={heroName}
+            heroDescription={heroDescription}
+            contactEmail={contactEmail}
+            contactLinkedIn={contactLinkedIn}
+            contactGitHub={contactGitHub}
+          />
+        </div>
 
         {/* Projects Section */}
-        <ProjectsSection projects={projects} />
+        <div className="flex-shrink-0 w-screen h-screen">
+          <ProjectsSection projects={projects} />
+        </div>
 
         {/* About Section */}
-        <AboutSection aboutText={aboutText} />
+        <div className="flex-shrink-0 w-screen h-screen">
+          <AboutSection aboutText={aboutText} />
+        </div>
 
         {/* Experience Section */}
-        <ExperienceSection experiences={experiences} />
+        <div className="flex-shrink-0 w-screen h-screen">
+          <ExperienceSection experiences={experiences} />
+        </div>
 
         {/* Contact Section */}
-        <ContactSection
-          contactEmail={contactEmail}
-          contactLinkedIn={contactLinkedIn}
-          contactInstagram={contactInstagram}
-          contactMedium={contactMedium}
-          contactGitHub={contactGitHub}
-        />
+        <div className="flex-shrink-0 w-screen h-screen">
+          <ContactSection
+            contactEmail={contactEmail}
+            contactLinkedIn={contactLinkedIn}
+            contactInstagram={contactInstagram}
+            contactMedium={contactMedium}
+            contactGitHub={contactGitHub}
+          />
+        </div>
 
         {/* Footer Section */}
-        <FooterSection
-          contactEmail={contactEmail}
-          contactLinkedIn={contactLinkedIn}
-          contactInstagram={contactInstagram}
-          contactGitHub={contactGitHub}
-        />
+        <div className="flex-shrink-0 w-screen h-screen">
+          <FooterSection
+            contactEmail={contactEmail}
+            contactLinkedIn={contactLinkedIn}
+            contactInstagram={contactInstagram}
+            contactGitHub={contactGitHub}
+          />
+        </div>
       </main>
 
       <div 
