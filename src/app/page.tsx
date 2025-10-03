@@ -48,12 +48,19 @@ async function getPortfolioData() {
     
     // Fetch data from API endpoint
     const baseUrl = process.env.VERCEL_URL 
-      ? `https://${process.env.VERCEL_URL}` 
+      ? `https://allankibet.vercel.app` 
       : 'http://localhost:3000';
+    
+    console.log('🌐 [SERVER] Base URL:', baseUrl);
     
     const response = await fetch(`${baseUrl}/api/portfolio`, {
       next: { revalidate: 60 }, // Cache for 60 seconds
+      headers: {
+        'User-Agent': 'Portfolio-Server/1.0'
+      }
     });
+    
+    console.log('📡 [SERVER] API Response status:', response.status, response.ok);
     
     if (response.ok) {
       const data = await response.json();
