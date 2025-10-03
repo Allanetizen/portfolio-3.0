@@ -13,6 +13,11 @@ interface ExperienceSectionProps {
 }
 
 export default function ExperienceSection({ experiences }: ExperienceSectionProps) {
+  console.log('💼 [CLIENT] ExperienceSection received experiences:', {
+    count: experiences.length,
+    experiences: experiences.map(e => ({ id: e.id, title: e.title, company: e.company }))
+  });
+  
   return (
     <section id="experience" className="w-screen h-screen flex flex-col items-center justify-center snap-center relative p-8">
               <h2 className="headline text-4xl font-bold mb-12 text-center">

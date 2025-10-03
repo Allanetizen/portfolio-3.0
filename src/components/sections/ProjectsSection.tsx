@@ -27,6 +27,11 @@ interface ProjectsSectionProps {
 export default function ProjectsSection({ projects }: ProjectsSectionProps) {
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
 
+  console.log('🎨 [CLIENT] ProjectsSection received projects:', {
+    count: projects.length,
+    projects: projects.map(p => ({ id: p.id, title: p.title }))
+  });
+
   return (
     <section id="projects" className="w-screen h-screen flex flex-col items-center justify-center snap-center relative p-8">
               <h2 className="headline text-4xl font-bold mb-8 text-center">

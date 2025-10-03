@@ -15,6 +15,14 @@ export default function ContactSection({
   contactMedium,
   contactGitHub
 }: ContactSectionProps) {
+  console.log('📧 [CLIENT] ContactSection received contact data:', {
+    email: contactEmail,
+    linkedin: contactLinkedIn,
+    instagram: contactInstagram,
+    medium: contactMedium,
+    github: contactGitHub
+  });
+  
   return (
     <section id="contact" className="w-screen h-screen flex items-center justify-center snap-center relative">
       <div className="max-w-4xl mx-auto px-6 text-center">

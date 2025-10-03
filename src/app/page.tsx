@@ -44,20 +44,32 @@ const defaultData = {
 
 async function getPortfolioData() {
   try {
+    console.log('🔍 [SERVER] Starting to fetch portfolio data...');
+    
     // Import the portfolio data directly from the JSON file
     const fs = await import('fs');
     const path = await import('path');
     
     const dataFile = path.join(process.cwd(), 'portfolio-data.json');
+    console.log('📁 [SERVER] Data file path:', dataFile);
     
     if (fs.existsSync(dataFile)) {
+      console.log('✅ [SERVER] Data file exists, reading...');
       const data = fs.readFileSync(dataFile, 'utf8');
-      return JSON.parse(data);
+      const parsedData = JSON.parse(data);
+      console.log('📊 [SERVER] Loaded data:', {
+        projects: parsedData.projects?.length || 0,
+        experiences: parsedData.experiences?.length || 0,
+        heroName: parsedData.heroName,
+        aboutText: parsedData.aboutText?.substring(0, 50) + '...'
+      });
+      return parsedData;
     }
     
+    console.log('⚠️ [SERVER] Data file not found, using default data');
     return defaultData;
   } catch (error) {
-    console.error('Error reading portfolio data:', error);
+    console.error('❌ [SERVER] Error reading portfolio data:', error);
     return defaultData;
   }
 }
@@ -65,6 +77,11 @@ async function getPortfolioData() {
 export default async function Home() {
   // Fetch data on the server
   const portfolioData = await getPortfolioData();
+  console.log('🚀 [SERVER] Final portfolio data being passed to client:', {
+    projects: portfolioData.projects?.length || 0,
+    experiences: portfolioData.experiences?.length || 0,
+    heroName: portfolioData.heroName
+  });
   
   return <PortfolioClient data={portfolioData} />;
 }

@@ -57,23 +57,41 @@ export default function PortfolioClient({ data }: PortfolioClientProps) {
   const [currentSection, setCurrentSection] = useState(0);
   const mainRef = useRef<HTMLDivElement>(null);
 
+  // Debug logging
+  console.log('🎯 [CLIENT] PortfolioClient received data:', {
+    projects: data.projects?.length || 0,
+    experiences: data.experiences?.length || 0,
+    heroName: data.heroName,
+    aboutText: data.aboutText?.substring(0, 50) + '...',
+    fullData: data
+  });
+
   // Use data directly from props (already fetched on server)
-  const projects = data.projects;
-  const experiences = data.experiences;
-  const heroName = data.heroName;
-  const heroDescription = data.heroDescription;
-  const aboutText = data.aboutText;
-  const contactEmail = data.contactEmail;
-  const contactLinkedIn = data.contactLinkedIn;
-  const contactInstagram = data.contactInstagram;
-  const contactMedium = data.contactMedium;
-  const contactGitHub = data.contactGitHub;
+  const projects = data.projects || [];
+  const experiences = data.experiences || [];
+  const heroName = data.heroName || 'Default Name';
+  const heroDescription = data.heroDescription || 'Default Description';
+  const aboutText = data.aboutText || 'Default About';
+  const contactEmail = data.contactEmail || 'mailto:default@example.com';
+  const contactLinkedIn = data.contactLinkedIn || 'https://linkedin.com/in/default';
+  const contactInstagram = data.contactInstagram || 'https://instagram.com/default';
+  const contactMedium = data.contactMedium || 'https://medium.com/@default';
+  const contactGitHub = data.contactGitHub || 'https://github.com/default';
   // const profileImageUrl = data.profileImageUrl;
   // const layout = data.layout;
+
+  console.log('📋 [CLIENT] Processed data:', {
+    projectsCount: projects.length,
+    experiencesCount: experiences.length,
+    heroName,
+    aboutText: aboutText.substring(0, 30) + '...'
+  });
 
   useEffect(() => {
     let scrollTimeout: NodeJS.Timeout;
     const currentMainRef = mainRef.current;
+
+    console.log('🔄 [CLIENT] Setting up scroll handlers, currentSection:', currentSection);
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
@@ -88,6 +106,7 @@ export default function PortfolioClient({ data }: PortfolioClientProps) {
       scrollTimeout = setTimeout(() => {
         if (currentMainRef) {
           const newSection = Math.round(currentMainRef.scrollLeft / window.innerWidth);
+          console.log('📜 [CLIENT] Scroll detected, newSection:', newSection, 'scrollLeft:', currentMainRef.scrollLeft, 'windowWidth:', window.innerWidth);
           setCurrentSection(newSection);
         }
       }, 100);
@@ -103,14 +122,17 @@ export default function PortfolioClient({ data }: PortfolioClientProps) {
       }
       clearTimeout(scrollTimeout);
     };
-  }, []);
+  }, [currentSection]);
 
   const sectionCount = 6; // Hero, Projects, About, Experience, Contact, Footer
 
   const scrollToSection = (index: number) => {
+    console.log('🎯 [CLIENT] Scrolling to section:', index);
     if (mainRef.current) {
+      const scrollPosition = index * window.innerWidth;
+      console.log('📍 [CLIENT] Scroll position:', scrollPosition, 'windowWidth:', window.innerWidth);
       mainRef.current.scrollTo({
-        left: index * window.innerWidth,
+        left: scrollPosition,
         behavior: 'smooth',
       });
     }
@@ -122,6 +144,7 @@ export default function PortfolioClient({ data }: PortfolioClientProps) {
       <main
         ref={mainRef}
         className="relative z-10 flex w-max min-h-screen snap-x snap-mandatory"
+        style={{ width: `${sectionCount * 100}vw` }}
       >
         {/* Hero Section */}
         <HeroSection

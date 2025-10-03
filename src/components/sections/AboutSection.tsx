@@ -5,6 +5,8 @@ interface AboutSectionProps {
 }
 
 export default function AboutSection({ aboutText }: AboutSectionProps) {
+  console.log('📖 [CLIENT] AboutSection received aboutText:', aboutText);
+  
   return (
     <section id="about" className="w-screen h-screen flex items-center justify-center snap-center relative">
       <div className="max-w-4xl mx-auto px-6 text-center">

@@ -13,6 +13,13 @@ export default function FooterSection({
   contactInstagram,
   contactGitHub
 }: FooterSectionProps) {
+  console.log('🦶 [CLIENT] FooterSection received contact data:', {
+    email: contactEmail,
+    linkedin: contactLinkedIn,
+    instagram: contactInstagram,
+    github: contactGitHub
+  });
+  
   return (
     <section id="footer" className="w-screen h-screen flex items-center justify-center snap-center relative">
       <div className="max-w-4xl mx-auto px-6 text-center">
