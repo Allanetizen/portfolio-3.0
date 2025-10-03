@@ -212,6 +212,9 @@ export default function PortfolioClient({ data }: PortfolioClientProps) {
         <div className="text-xs text-gray-400 font-medium">
           {['Hero', 'Projects', 'About', 'Experience', 'Contact', 'Footer'][currentSection]}
         </div>
+        <div className="text-xs text-gray-500 mt-2">
+          Use ← → arrows or click dots to navigate
+        </div>
       </div>
     </div>
   );
